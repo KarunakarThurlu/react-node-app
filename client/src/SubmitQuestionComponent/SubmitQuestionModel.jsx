@@ -21,6 +21,7 @@ function SubmitQuestionModel(props) {
         console.log(response);
         reset();
     }
+
     useEffect(() => {
         TopicApiCall.getAllTopics()
             .then(response => setTopics(response.data.data))
