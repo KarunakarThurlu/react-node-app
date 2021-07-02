@@ -9,6 +9,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import TopicApiCall from "../ApiCalls/TopicApiCall";
 
+
 function SubmitQuestionModel(props) {
 
     const [topics, setTopics] = useState([]);
@@ -34,6 +35,7 @@ function SubmitQuestionModel(props) {
             >
                 <form onSubmit={handleSubmit(onSubmit)} className="question-form">
                     <TextField className="MuiTextField-root-login-submitquestion"
+                        variant="outlined"
                         multiline rows={3} type="area"
                         aria-label="Question Name"
                         placeholder="Enter Question Name here"
@@ -42,9 +44,10 @@ function SubmitQuestionModel(props) {
                     /><br />
                     {errors.name && <span className="Error-Message">{errors.name.message}</span>}
                     <br />
-                    <FormControl variant="standard" >
+                    <FormControl variant="outlined" >
                         <InputLabel htmlFor="outlined-age-native-simple">Topic</InputLabel>
                         <Select
+
                             native
                             label="topic"
                             name="topic"
@@ -58,6 +61,7 @@ function SubmitQuestionModel(props) {
                     {errors.answer && <span className="Error-Message">{errors.topic.message}</span>}
                     <br />
                     <TextField className="MuiTextField-root"
+                        variant="outlined"
                         label="Option A"
                         name="optionA"
                         {...register("optionA", { required: "OptionA is required" })}
@@ -65,6 +69,7 @@ function SubmitQuestionModel(props) {
                     {errors.optionA && <span className="Error-Message">{errors.optionA.message}</span>}
                     <br />
                     <TextField className="MuiTextField-root"
+                        variant="outlined"
                         label="Option B"
                         name="optionB"
                         {...register("optionB", { required: "OptionB is required" })}
@@ -72,6 +77,7 @@ function SubmitQuestionModel(props) {
                     {errors.optionB && <span className="Error-Message">{errors.optionB.message}</span>}
                     <br />
                     <TextField className="MuiTextField-root"
+                        variant="outlined"
                         label="Option C"
                         name="optionC"
                         {...register("optionC", { required: "OptionC is required" })}
@@ -79,6 +85,7 @@ function SubmitQuestionModel(props) {
                     {errors.optionC && <span className="Error-Message">{errors.optionC.message}</span>}
                     <br />
                     <TextField className="MuiTextField-root"
+                        variant="outlined"
                         label="Option D"
                         name="optionD"
                         {...register("optionD", { required: "OptionD is required" })}
@@ -86,6 +93,7 @@ function SubmitQuestionModel(props) {
                     {errors.optionD && <span className="Error-Message">{errors.optionD.message}</span>}
                     <br />
                     <TextField className="MuiTextField-root"
+                        variant="outlined"
                         label="Answer"
                         name="answer"
                         {...register("answer", { required: "Answer option is required" })}

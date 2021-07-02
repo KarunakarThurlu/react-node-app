@@ -29,25 +29,21 @@ function WriteExam(props) {
     const [currentQuestion, setCurrentQuestion] = useState('')
     const [questions, setQuestions] = useState([]);
     const [questionInfo, setQuestionInfo] = useState({});
-    const [checked, setChecked] = useState(false);
+    let [seconds, setSeconds] = useState(0);
+    let [minutes, setMinutes] = useState(20);
 
     useEffect(() => {
         TopicApiCall.getAllTopics()
             .then(response => setTopics(response.data.data))
             .catch(error => console.log(error));
     }, []);
-    let [seconds, setSeconds] = useState(0);
-    let [minutes, setMinutes] = useState(20);
+
 
 
     const handleChange = (event) => {
         setValue(event.target.value);
     };
 
-    const handleStartClick = () => {
-        setStartExam(true);
-        console.log("fooo");
-    }
     let handleClick = () => {
         if (topicName === '' || topicName === 'Please Select Topic') {
             let error = topicName === 'Please Select Topic' ? topicName : '';
@@ -64,7 +60,7 @@ function WriteExam(props) {
                         });
                         setQuestions(array);
                         setQuestionInfo(array[0]);
-                        setCurrentQuestion(0)
+                        setCurrentQuestion(1);
                     }
                 })
                 .catch(error => {
@@ -92,24 +88,38 @@ function WriteExam(props) {
         const updateAnswer = questions.find(Q => Q.id === questionInfo.id)
         if (updateAnswer) {
             updateAnswer.answer = e.target.value;
-            setChecked(true);
         }
     }
+    const handleNextButtons = (value) => {
+        if (value === "PreviousQuestion") {
+            const back = currentQuestion === 1 ? 1 : currentQuestion - 1;
+            setCurrentQuestion(back);
+            const updateAnswer = questions.find(Q => Q.id === back);
+            setQuestionInfo(updateAnswer);
+        }
+        if (value === "NextQuestion") {
+            const forward = currentQuestion === questions.length ? questions.length : currentQuestion + 1;
+            setCurrentQuestion(forward);
+            const updateAnswer = questions.find(Q => Q.id === forward);
+            setQuestionInfo(updateAnswer);
+        }
+    }
+
     return (
         <div className="write-exam-container">
             <Home />
             {startExam === true ? <Grid container >
                 <Grid item xs={8} sm={8}>
                     <FormControl >
-                        <FormLabel >{questionInfo.name}</FormLabel>
+                        <FormLabel >{questionInfo.id}.{questionInfo.name}</FormLabel>
                         <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                            <FormControlLabel value="optionA" onClick={e => saveAnswer(e)} control={<Radio checked={checked} />} label={questionInfo.optionA} />
-                            <FormControlLabel value="optionB" onClick={e => saveAnswer(e)} control={<Radio checked={checked} />} label={questionInfo.optionB} />
-                            <FormControlLabel value="optionC" onClick={e => saveAnswer(e)} control={<Radio checked={checked} />} label={questionInfo.optionC} />
-                            <FormControlLabel value="optionD" onClick={e => saveAnswer(e)} control={<Radio checked={checked} />} label={questionInfo.optionD} />
+                            <FormControlLabel value="optionA" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionA" ? true : false} />} label={questionInfo.optionA} />
+                            <FormControlLabel value="optionB" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionB" ? true : false} />} label={questionInfo.optionB} />
+                            <FormControlLabel value="optionC" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionC" ? true : false} />} label={questionInfo.optionC} />
+                            <FormControlLabel value="optionD" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionD" ? true : false} />} label={questionInfo.optionD} />
                         </RadioGroup>
                         <div className="next-buttons">
-                            <Button variant="contained" color="primary"><SkipPreviousRoundedIcon style={{ color: "white" }} onClick={(e) => setCurrentQuestion(currentQuestion - 1)} /></Button><Button variant="contained" color="primary"><SkipNextRoundedIcon style={{ color: "white" }} onClick={(e) => setCurrentQuestion(currentQuestion + 1)} /></Button>
+                            <Button variant="contained" color="primary" onClick={e => handleNextButtons("PreviousQuestion")}><SkipPreviousRoundedIcon style={{ color: "white" }} /></Button><Button variant="contained" color="primary" onClick={(e) => handleNextButtons("NextQuestion")}><SkipNextRoundedIcon style={{ color: "white" }} /></Button>
                         </div>
                     </FormControl>
                 </Grid>
@@ -117,7 +127,7 @@ function WriteExam(props) {
                     Timer   {minutes} : {seconds}
                     <Grid className="questions-list" container justify="center" spacing={1}>
                         {questions.map((value, i) => (
-                            <Grid variant="contained" key={value.id} item style={{ backgroundColor: currentQuestion === i ? "yellow" : "" }} onClick={(e) => { setCurrentQuestion(i); setQuestionInfo(value); setChecked(false); }} >
+                            <Grid variant="contained" key={value.id} item style={{ backgroundColor: value.answer !== "" ? "green" : "yellow" }} onClick={(e) => { setCurrentQuestion(value.id); setQuestionInfo(value); }} >
                                 {value.id}
                             </Grid>
                         ))}

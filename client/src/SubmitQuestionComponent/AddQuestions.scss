@@ -17,12 +17,13 @@
 
 .MuiDialog-paper-AddQuestionModel {
   .MuiDialog-paperScrollPaper {
-    display: flex;
-    max-height: calc(100% - 64px);
     flex-direction: column;
-    width: 32em;
+    width: 35em;
     text-align: center;
     padding: 15px;
+    .MuiSvgIcon-root {
+      margin-left: 14em;
+    }
     .MuiFormControl-root {
       width: 28em;
     }

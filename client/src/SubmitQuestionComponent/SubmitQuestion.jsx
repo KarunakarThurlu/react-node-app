@@ -82,7 +82,10 @@ function SubmitQuestion(props) {
                 },
             },
 
-            { field: 'status', title: 'Status', },
+            {
+                field: 'status', title: 'Status',
+                render: (params) => (<Button variant="text">{params.status}</Button>)
+            },
             {
                 field: 'updatedOn', title: 'Update Date', cellStyle: {
                     whiteSpace: 'nowrap'
