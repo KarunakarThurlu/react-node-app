@@ -7,7 +7,7 @@ import Home from "../src/HomeComponent/Home";
 import Login from "../src/LoginComponent/Login";
 import LandingPage from "./LandingComponent/LandingComponent";
 import Register from "../src/RegisterComponent/Register";
-import SubmitQuestion from "./SubmitQuestionComponent/SubmitQuestion";
+import QuestionsTable from "./SubmitQuestionComponent/QuestionsTable";
 import PageNotFoud from "./Utils/Custom404Page";
 
 import PublicRoute from "./Router/PublicRoute";
@@ -32,7 +32,7 @@ function App() {
             <PrivateRoute component={Home} exact path="/home" />
             <PrivateRoute component={DashBoard} exact path="/dashboard" />
             <PrivateRoute component={WriteExam} exact path="/writeexam" />
-            <PrivateRoute component={SubmitQuestion} exact path="/submitquestion" />
+            <PrivateRoute component={QuestionsTable} exact path="/submitquestion" />
             <PrivateRoute component={ManageUsers} exact path="/manageusers" />
             <PrivateRoute component={StartExam} exact path="/startexam" />
             <Route component={PageNotFoud} />

@@ -28,6 +28,7 @@ exports.deleteQuestionById = async (request, response, next) => {
     }
 }
 exports.updateQuestion = async (request, response, next) => {
+
     try {
         const questionFromDB = await Question.findOne({ _id: request.body._id });
         if (questionFromDB) {
@@ -39,7 +40,7 @@ exports.updateQuestion = async (request, response, next) => {
             const updatedQuestion = await Question.findByIdAndUpdate({ _id: request.body._id }, questionFromDB, (error, doc, res) => { });
             return response.json({ data: updatedQuestion, statusCode: 200, message: "Question updated" });
         } else {
-            return response.json({ data: {}, statusCode: 400, message: "not found" });
+            return response.json({ data: {}, statusCode: 400, message: "nottttttttt found" });
         }
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });
@@ -90,6 +91,23 @@ exports.getAllQuestionsByTopicId = async (request, response, next) => {
                 return response.json({ data: questions, totalCount: totalCount, statusCode: 200, message: "OK" });
             else
                 return response.json({ data: {}, statusCode: 400, message: "Not Found" });
+        }
+    } catch (error) {
+        return response.json({ data: {}, statusCode: 500, message: error.message });
+    }
+}
+
+exports.getquestionscountforDashboard = async (request, response, next) => {
+    try {
+        const totalQuestionsCount = await Question.find().count();
+        const approvedQuestionsCount = await Question.find({ status: "APPROVED" }).count();
+        const rejectedQuestionsCount = await Question.find({ status: "REJECTED" }).count();
+        const pendingQuestionsCount = await Question.find({ status: "PENDING" }).count();
+
+        if (totalQuestionsCount || approvedQuestionsCount || rejectedQuestionsCount || pendingQuestionsCount) {
+            return response.json({ totalQuestionsCount: totalQuestionsCount, approvedQuestionsCount: approvedQuestionsCount, rejectedQuestionsCount: rejectedQuestionsCount, pendingQuestionsCount: pendingQuestionsCount, statusCode: 200, message: "OK" });
+        } else {
+            return response.json({ data: {}, statusCode: 400, message: "Not Found" });
         }
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });

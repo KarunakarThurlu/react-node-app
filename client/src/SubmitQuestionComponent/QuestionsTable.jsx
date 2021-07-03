@@ -8,6 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import moment from "moment";
 import Home from '../HomeComponent/Home';
 import SubmitQuestionModel from "./SubmitQuestionModel";
+import ChangeQuestionStatusModel from "./ChangeQuestionStatusModel";
 import FilterListTwoToneIcon from '@material-ui/icons/FilterListTwoTone';
 import MaterialTable from 'material-table';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -28,7 +29,9 @@ const LightTooltip = withStyles((theme) => ({
 
 function SubmitQuestion(props) {
 
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [statusModelOpen, setStatusModelOpen] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState();
     const { getAllQuestions, questions, deleteQuestion } = useContext(QuestionsContext);
 
     useEffect(() => {
@@ -57,7 +60,7 @@ function SubmitQuestion(props) {
                 ),
             },
             { field: 'creator_name', title: 'Creator', },
-            { field: 'topic_name', title: 'Topic', width: 30 },
+            { field: 'topic_name', title: 'Topic', },
             {
                 field: "optionA", title: "optionA",
                 cellStyle: {
@@ -81,10 +84,9 @@ function SubmitQuestion(props) {
                     whiteSpace: 'nowrap'
                 },
             },
-
             {
                 field: 'status', title: 'Status',
-                render: (params) => (<Button variant="text">{params.status}</Button>)
+                render: (params) => (<Button variant="text" style={{ color: params.status === "APPROVED" ? '#388e3c' : params.status === "PENDING" ? "#f57c00" : "#d32f2f" }} onClick={() => { setStatusModelOpen(true); setCurrentQuestion(params) }}>{params.status} </Button>)
             },
             {
                 field: 'updatedOn', title: 'Update Date', cellStyle: {
@@ -94,9 +96,6 @@ function SubmitQuestion(props) {
             { field: 'createdOn', title: 'Created Date', },
         ];
 
-    const Questions = [];
-
-
     if (questions !== undefined) {
         questions.map((q, i) => {
             q.creator_name = q.creator.name;
@@ -105,11 +104,18 @@ function SubmitQuestion(props) {
             q.updatedOn = moment(q.updatedOn).format("YYYY-MM-DD");
         });
     }
+    const updateQuestioninList = (data) => {
+        const updateAnswer = questions.find(Q => Q._id === data._id)
+        if (updateAnswer) {
+            updateAnswer.status = data.status;
+        }
+    }
     const rows = questions;
     return (
         <div className="questions-container">
             <Home />
-            <SubmitQuestionModel open={open} onClose={() => setOpen(false)} />
+            <ChangeQuestionStatusModel updateQuestion={updateQuestioninList} open={statusModelOpen} CQData={currentQuestion} onClose={() => setStatusModelOpen(false)} />
+            <SubmitQuestionModel open={open} CQData={currentQuestion} onClose={() => setOpen(false)} />
             <div className="Questions-Table">
                 <MaterialTable
                     title="Questions Data Table"

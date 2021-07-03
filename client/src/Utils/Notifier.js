@@ -36,7 +36,7 @@ const Notifier = {
             })
         } else {
             toast(msg, {
-                position: "top-right",
+                position: "bottom-left",
                 autoClose: 6000,
                 hideProgressBar: false,
                 closeOnClick: true,

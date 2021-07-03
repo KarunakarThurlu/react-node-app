@@ -38,7 +38,15 @@ const QuestionsApiCall = {
     },
     updateQuestion: async (data) => {
         const token = await GetAuthToken();
-        return await axios.post(config.Base_URL + "/question/updatequestion", data, {
+        return await axios.put(config.Base_URL + "/question/updatequestion", data, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    getQuestionsCountForDashBoard: async () => {
+        const token = await GetAuthToken();
+        return await axios.get(config.Base_URL + "/question/getquestionscountfordashboard", {
             headers: {
                 Authorization: `Bearer ` + token,
             },

@@ -11,7 +11,7 @@ import TopicApiCall from "../ApiCalls/TopicApiCall";
 
 
 function SubmitQuestionModel(props) {
-
+    console.log(props.CQData);
     const [topics, setTopics] = useState([]);
     const { saveQuestion } = useContext(QuestionsContext);
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -40,6 +40,7 @@ function SubmitQuestionModel(props) {
                         multiline rows={3} type="area"
                         aria-label="Question Name"
                         placeholder="Enter Question Name here"
+                        value={props.CQData !== undefined ? props.CQData.name : ""}
                         name="name"
                         {...register("name", { required: "Question name is required" })}
                     /><br />
@@ -59,7 +60,7 @@ function SubmitQuestionModel(props) {
                         </Select>
                     </FormControl>
                     <br />
-                    {errors.answer && <span className="Error-Message">{errors.topic.message}</span>}
+                    {errors.topic && <span className="Error-Message">{errors.topic.message}</span>}
                     <br />
                     <TextField className="MuiTextField-root"
                         variant="outlined"

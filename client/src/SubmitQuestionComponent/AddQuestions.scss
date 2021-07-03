@@ -1,3 +1,4 @@
+//QuestionDataTable Related Styles
 .questions-container {
   overflow-y: inherit;
   margin-top: 4.5em;
@@ -15,6 +16,7 @@
   }
 }
 
+//Add&Edit Question Model Related Styles
 .MuiDialog-paper-AddQuestionModel {
   .MuiDialog-paperScrollPaper {
     flex-direction: column;
@@ -30,6 +32,23 @@
     .MuiButtonBase-root {
       width: 8em;
       margin: 5px;
+    }
+  }
+}
+
+// ChangeQuestionStatus Model Related Styles
+.MuiDialog-paper-ChangeQuestionStatusModel {
+  .MuiDialog-container {
+    padding: 40px;
+    .MuiDialog-paperWidthSm {
+      padding: 10px;
+      max-width: 80em;
+      width: 70em;
+      .MuiDialogTitle-root {
+        .MuiTypography-h6 {
+          text-align: right;
+        }
+      }
     }
   }
 }
