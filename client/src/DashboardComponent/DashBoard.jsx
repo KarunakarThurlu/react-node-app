@@ -35,22 +35,22 @@ function DashBoard() {
             <h4>Questions DashBoard</h4>
             <Grid container spacing={5}>
                 <Grid item xs={5} sm={3}>
-                    <Paper ><AccessAlarmsRoundedIcon style={{ color: "orange", fontSize: "3em" }} />InProgress <b> {pendingQuestions} </b>  </Paper>
+                    <Paper ><AccessAlarmsRoundedIcon style={{ color: "orange", fontSize: "3em" }} />InProgress <b> <h3>{pendingQuestions}</h3> </b>  </Paper>
                 </Grid>
                 <Grid item xs={5} sm={3}>
-                    <Paper > <CheckRoundedIcon style={{ color: "green", fontSize: "3em" }} />Approved {approvedQuestions} </Paper>
+                    <Paper > <CheckRoundedIcon style={{ color: "green", fontSize: "3em" }} />Approved <b> <h3>{approvedQuestions}</h3> </b> </Paper>
                 </Grid>
                 <Grid item xs={5} sm={3}>
-                    <Paper > <ClearRoundedIcon style={{ color: "red", fontSize: "3em" }} />Rejected {rejectedQuestions}</Paper>
+                    <Paper > <ClearRoundedIcon style={{ color: "red", fontSize: "3em" }} />Rejected <b> <h3>{rejectedQuestions}</h3> </b></Paper>
                 </Grid>
                 <Grid item xs={5} sm={3}>
-                    <Paper ><BarChartRoundedIcon style={{ fontSize: "3em" }} />Total Questions {totalQuestions}</Paper>
+                    <Paper ><BarChartRoundedIcon style={{ fontSize: "3em" }} />Total Questions <b> <h3>{totalQuestions}</h3> </b></Paper>
                 </Grid>
                 <Grid item xs={12} className="chart" >
                     <Paper >Total Records Chart</Paper>
                 </Grid>
             </Grid>
-        </div>
+        </div >
     )
 }
 

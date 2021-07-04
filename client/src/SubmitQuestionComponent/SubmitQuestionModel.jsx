@@ -40,7 +40,7 @@ function SubmitQuestionModel(props) {
                         multiline rows={3} type="area"
                         aria-label="Question Name"
                         placeholder="Enter Question Name here"
-                        value={props.CQData !== undefined ? props.CQData.name : ""}
+
                         name="name"
                         {...register("name", { required: "Question name is required" })}
                     /><br />
