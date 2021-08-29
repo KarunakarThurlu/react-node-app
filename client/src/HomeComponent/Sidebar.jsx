@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Drawer from '@material-ui/core/Drawer';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Link } from "react-router-dom"
@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 
 
 function Sidebar(props) {
-    const [drawerOpen, setDrawerOpen] = useState(false);
+
     return (
         <div className="sidebar">
             <Drawer variant="persistent"
@@ -24,12 +24,18 @@ function Sidebar(props) {
                 <MenuItem onClick={props.onHide}>
                     <Link to="/writeexam" className="MuiMenuItem-root-sidebar">WriteExam</Link>
                 </MenuItem>
+                <MenuItem onClick={props.onHide}>
+                    <Link to="/addquestion" className="MuiMenuItem-root-sidebar">Add Question</Link>
+                </MenuItem>
+                {props.isAdmin==="true"?
+                <>
                 <MenuItem onClick={props.onHide} >
-                    <Link to="/submitquestion" className="MuiMenuItem-root-sidebar">Submit Question</Link>
+                    <Link to="/submitquestion" className="MuiMenuItem-root-sidebar">Questions</Link>
                 </MenuItem>
                 <MenuItem onClick={props.onHide}>
-                    <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Manage Users</Link>
+                    <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Users</Link>
                 </MenuItem>
+                </>:""}
             </Drawer>
         </div>
     )

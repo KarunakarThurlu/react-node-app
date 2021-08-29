@@ -98,11 +98,12 @@ exports.getAllQuestionsByTopicId = async (request, response, next) => {
 }
 
 exports.getquestionscountforDashboard = async (request, response, next) => {
+    let user = await GetUserFromToken.getUserDetailsFromToken(request);
     try {
-        const totalQuestionsCount = await Question.find().count();
-        const approvedQuestionsCount = await Question.find({ status: "APPROVED" }).count();
-        const rejectedQuestionsCount = await Question.find({ status: "REJECTED" }).count();
-        const pendingQuestionsCount = await Question.find({ status: "PENDING" }).count();
+        const totalQuestionsCount = await Question.find({creator:user._id}).count();
+        const approvedQuestionsCount = await Question.find({ status: "APPROVED",creator:user._id }).count();
+        const rejectedQuestionsCount = await Question.find({ status: "REJECTED",creator:user._id }).count();
+        const pendingQuestionsCount = await Question.find({ status: "PENDING",creator:user._id }).count();
 
         if (totalQuestionsCount || approvedQuestionsCount || rejectedQuestionsCount || pendingQuestionsCount) {
             return response.json({ totalQuestionsCount: totalQuestionsCount, approvedQuestionsCount: approvedQuestionsCount, rejectedQuestionsCount: rejectedQuestionsCount, pendingQuestionsCount: pendingQuestionsCount, statusCode: 200, message: "OK" });

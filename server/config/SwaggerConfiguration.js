@@ -1,3 +1,4 @@
+import swaggerJSDoc from "swagger-jsdoc";
 
 const oops = () => {
 
@@ -5,6 +6,53 @@ const oops = () => {
 
 }
 export default oops;
+
+//swagger configuration in nodejs
+
+const defination ={
+    info: {
+        title: 'swagger-jsdoc-nodejs',
+        version: '1.0.0',
+        description: 'This is a sample server'
+    },
+    host: 'localhost:8080',
+    schemes: ['http'],
+    basePath: '/api/v1',
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    paths: {
+        '/': {
+            get: {
+                operationId: 'get_api',
+                tags: ['api'],
+                parameters: [],
+                responses: {
+                    '200': {
+                        description: 'successful operation',
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                'message': {
+                                    type: 'string'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+const swagger = swaggerJSDoc(defination);
+
+export function getApi() {
+    return new Promise((resolve, reject) => {
+        swagger.then(function (api) {
+            resolve(api);
+        });
+    });
+
 /*
 const defination = {
     openapi: "3.0.0",

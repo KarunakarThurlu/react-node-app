@@ -52,3 +52,31 @@
     }
   }
 }
+
+
+//Add Question page Styles
+.addquestion{
+ margin-top: 5em;
+ .addQuestionForm{
+   margin: 3em;
+   .questionName{
+    width: 58em;
+   }
+   .topic{
+    width: 19em;
+    margin-left: 10px;
+   }
+   .options{
+    margin: 25px 9px 20px 0px;
+    width: 19em;
+   }
+   .submit{
+     text-align: center;
+     margin-top: 8em;
+   }
+   .MuiFormHelperText-root{
+    color:red;
+    font-size: 15px;
+  }
+ }
+}

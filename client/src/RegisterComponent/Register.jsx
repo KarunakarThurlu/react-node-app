@@ -18,7 +18,7 @@ function Register(props) {
     const onSubmit = (data) => {
 
         saveUser(data);
-        /*SignupApi.signUp(data)
+        SignupApi.signUp(data)
             .then(response => {
                 if (response.data.statusCode === 200) {
                     //saveUser(response.data.data)
@@ -27,7 +27,7 @@ function Register(props) {
             .catch(error => {
 
             });
-        */
+        
     };
 
     return (

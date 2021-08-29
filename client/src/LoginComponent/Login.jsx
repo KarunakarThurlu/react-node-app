@@ -10,7 +10,6 @@ import { withRouter } from "react-router-dom";
 import config from "../ApiCalls/Config";
 import LoginApiCall from "../ApiCalls/LoginApiCall";
 import Notifier from "../Utils/Notifier";
-import { toast } from 'react-toastify';
 
 import "./login.css";
 
@@ -24,6 +23,8 @@ function Login(props) {
             setLoader(false);
             if (response.data.statusCode === 200) {
                 localStorage.setItem("isAuthenticated", true);
+                if(response.data.data.roles.some(role => role.role_name === "ADMIN"))
+                    localStorage.setItem("isAdmin", true);
                 props.history.push("/home")
                 Notifier.notify(response.data.message, Notifier.notificationType.SUCCESS);
                 config.LOCAL_FORAGE.setItem("token", response.data.token);

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import Home from '../HomeComponent/Home'
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import AccessAlarmsRoundedIcon from '@material-ui/icons/AccessAlarmsRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';

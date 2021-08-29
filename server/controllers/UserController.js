@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 //login
 exports.login = async (request, response, next) => {
     try {
-        let user = await User.findOne({ email: request.body.email });
+        let user = await User.findOne({ email: request.body.email }).populate("roles");
         if (user === null)
             return response.json({ data: request.body, statusCode: 400, "message": request.body.email + " is not Found in our database. Please signup!." });
         let validpassword = await bcrypt.compare(request.body.password, user.password);

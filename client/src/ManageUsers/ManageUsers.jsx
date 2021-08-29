@@ -23,7 +23,7 @@ function ManageUsers(props) {
 
     const columns =
         [
-            { field: 'userId', title: 'Id', },
+            { field: '_id', title: 'Id', },
             { field: 'email', title: 'Email', },
             { field: 'gender', title: 'Gender', },
             { field: 'name', title: 'User name', },
@@ -37,7 +37,7 @@ function ManageUsers(props) {
 
     if (users !== undefined) {
         users.map((q, i) => {
-            q.companyname = q.company.name;
+            q.companyname = q.company !== null?q.company.name:"";
             q.createdOn = moment(q.createdOn).format("YYYY-MM-DD");
             q.updatedOn = moment(q.updatedOn).format("YYYY-MM-DD");
 

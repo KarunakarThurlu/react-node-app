@@ -23,6 +23,8 @@ const QuestionsState = (props) => {
                         payload: response.data.data
                     });
                     return response.data.statusCode;
+                }else{
+                    Notifier.notify( response.data.message, Notifier.notificationType.ERROR);
                 }
             }).catch(error => {
 

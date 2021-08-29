@@ -9,8 +9,8 @@
     "build": "cd client && npm install && npm run build"
   },
   "engines": {
-  "node": "10.19.0"
-   },
+    "node": "10.19.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/karunakarjava/react-node-app.git"

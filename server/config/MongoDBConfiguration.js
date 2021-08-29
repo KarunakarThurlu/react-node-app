@@ -6,3 +6,4 @@ mongoose.connect("mongodb://localhost:27017/nodejs", { useCreateIndex: true, use
 }).catch(error => {
     console.log(error);
 });
+//https://linuxhint.com/install_mongodb_ubuntu_20_04/

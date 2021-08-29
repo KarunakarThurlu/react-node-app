@@ -15,7 +15,7 @@ function NavBar(props) {
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-
+    const [isAdmin,setIsAdmin]=useState(false);
 
 
     const handleClose = () => {
@@ -24,16 +24,19 @@ function NavBar(props) {
 
     const logout = () => {
         config.LOCAL_FORAGE.removeItem("token");
-        localStorage.setItem("isAuthenticated", false);
+        localStorage.clear();
         props.history.push("/signin");
-        Notifier.notify("You are Logged out  Successfully!.", Notifier.notificationType.WARNING);
+        Notifier.notify("You are Logged out  Successfully!.", Notifier.notificationType.SUCCESS);
         //window.location.href = "/signin"
     }
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     }
 
-
+   const handleMenuClick = () =>{
+    setSidebarOpen(true)
+    setIsAdmin(localStorage.getItem("isAdmin"));
+   }
     return (
         <div>
             <Menu
@@ -49,7 +52,7 @@ function NavBar(props) {
             </Menu>
             <AppBar title="Java Quiz Application" variant="elevation" className="nav-bar">
                 <Toolbar>
-                    <IconButton onClick={() => setSidebarOpen(true)} >
+                    <IconButton onClick={handleMenuClick} >
                         <MenuIcon style={{ color: "white", fontSize: "2.5rem" }} />
                     </IconButton>
                     <Typography variant="h6" >
@@ -58,7 +61,7 @@ function NavBar(props) {
                     <AccountCircleSharpIcon onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />
                 </Toolbar>
             </AppBar>
-            <Sidebar open={sidebarOpen} onHide={() => setSidebarOpen(false)} />
+            <Sidebar open={sidebarOpen} isAdmin={isAdmin} onHide={() => setSidebarOpen(false)} />
         </div>
     )
 }

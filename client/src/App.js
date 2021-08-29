@@ -9,7 +9,7 @@ import LandingPage from "./LandingComponent/LandingComponent";
 import Register from "../src/RegisterComponent/Register";
 import QuestionsTable from "./SubmitQuestionComponent/QuestionsTable";
 import PageNotFoud from "./Utils/Custom404Page";
-
+import AddQuestion from "./SubmitQuestionComponent/AddQuestion";
 import PublicRoute from "./Router/PublicRoute";
 import PrivateRoute from "./Router/PrivateRoute";
 import DashBoard from './DashboardComponent/DashBoard';
@@ -34,6 +34,7 @@ function App() {
             <PrivateRoute component={WriteExam} exact path="/writeexam" />
             <PrivateRoute component={QuestionsTable} exact path="/submitquestion" />
             <PrivateRoute component={ManageUsers} exact path="/manageusers" />
+            <PrivateRoute component={AddQuestion} exact path="/addquestion" />
             <PrivateRoute component={StartExam} exact path="/startexam" />
             <Route component={PageNotFoud} />
 
