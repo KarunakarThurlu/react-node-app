@@ -35,6 +35,12 @@ function Sidebar(props) {
                 <MenuItem onClick={props.onHide}>
                     <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Users</Link>
                 </MenuItem>
+                <MenuItem onClick={props.onHide}>
+                    <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Topics</Link>
+                </MenuItem>
+                <MenuItem onClick={props.onHide}>
+                    <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Exams</Link>
+                </MenuItem>
                 </>:""}
             </Drawer>
         </div>

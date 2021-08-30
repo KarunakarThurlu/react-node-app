@@ -1,16 +1,16 @@
-import React, { useContext, useState,useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Home from "../HomeComponent/Home";
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText'
 import QuestionsContext from '../Context/QuestionsContext/QuestionsContext';
 import TopicApiCall from "../ApiCalls/TopicApiCall";
 
 const AddQuestion = () => {
 
-    const [isValid, setIsValid] = useState(false);
     const [topics, setTopics] = useState([]);
     const { saveQuestion } = useContext(QuestionsContext);
     useEffect(() => {
@@ -19,7 +19,7 @@ const AddQuestion = () => {
             .catch(error => console.log(error));
     }, []);
     const [data, setData] = useState({
-        namee: "",
+        name: "",
         optionA: '',
         optionB: '',
         optionC: '',
@@ -29,7 +29,7 @@ const AddQuestion = () => {
     });
 
     const [errors, setErrors] = useState({
-        namee: "",
+        name: "",
         optionA: '',
         optionB: '',
         optionC: '',
@@ -38,19 +38,43 @@ const AddQuestion = () => {
         answer: '',
     });
 
-    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            saveQuestion(data);
+            setData({
+                name: "",
+                optionA: '',
+                optionB: '',
+                optionC: '',
+                optionD: '',
+                topic: '',
+                answer: '',
+            });
+        } else {
+            console.log(data);
+            console.log('error');
+        }
+    }
+
+    const handleChange = (e) => {
+        setData({ ...data, [e.target.name]: e.target.value });
+        validate(e.target.name, e.target.value);
+    }
+
+
     const validate = (name, value) => {
         switch (name) {
-            case 'namee':
+            case 'name':
                 if (value === "") {
-                    setErrors({ ...errors, namee: 'Question is required' });
+                    setErrors({ ...errors, name: 'Question is required' });
                 } else {
                     if (value.length < 10) {
-                        setErrors({ ...errors, namee: 'Question should be atleast 10 characters' });
+                        setErrors({ ...errors, name: 'Question should be atleast 10 characters' });
                     } else if (value.length > 150) {
-                        setErrors({ ...errors, namee: 'Question should be less than 100 characters' });
+                        setErrors({ ...errors, name: 'Question should be less than 100 characters' });
                     } else {
-                        setErrors({ ...errors, namee: "" });
+                        setErrors({ ...errors, name: "" });
                     }
                 }
                 break;
@@ -91,7 +115,7 @@ const AddQuestion = () => {
                 if (value === '') {
                     setErrors({ ...errors, optionD: 'Option D is required' });
                 } else {
-                     if (value.length > 40) {
+                    if (value.length > 40) {
                         setErrors({ ...errors, optionD: 'Option D should be less than 40 characters' });
                     } else {
                         setErrors({ ...errors, optionD: '' });
@@ -112,7 +136,7 @@ const AddQuestion = () => {
                 }
                 break;
             case 'topic':
-                if (value === '') {
+                if (value === "") {
                     setErrors({ ...errors, topic: 'Topic is required' });
                 } else {
                     setErrors({ ...errors, topic: '' });
@@ -121,29 +145,46 @@ const AddQuestion = () => {
                 break;
         }
     }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validateForm()) {
-            console.log(data);
-            saveQuestion(data);
-        } else {
-            console.log(data);
-            console.log('error');
-        }
-    }
-
-    const handleChange = (e) => {
-        setData({ ...data, [e.target.name]: e.target.value });
-        validate(e.target.name, e.target.value);
-    }
-
     const validateForm = () => {
         let isValid = true;
-        Object.values(errors).forEach(val => {
-            val.length>0 && (isValid = false);
-        });
-        setIsValid(isValid);
+        let errors = {
+            name: "",
+            optionA: "",
+            optionB: "",
+            optionC: "",
+            optionD: "",
+            topic: "",
+            answer: "",
+        }
+        if (data.name === "") {
+            errors["name"] = "Question Name is reuired."
+            isValid = false;
+        }
+        if (data.topic === "") {
+            errors["topic"] = "Please select topic."
+            isValid = false;
+        }
+        if (data.optionA === "") {
+            errors["optionA"] = "optionA is reuired."
+            isValid = false;
+        }
+        if (data.optionB === "") {
+            errors["optionB"] = "optionB is reuired."
+            isValid = false;
+        }
+        if (data.optionC === "") {
+            errors["optionC"] = "optionC is reuired."
+            isValid = false;
+        }
+        if (data.optionD === "") {
+            errors["optionD"] = "optionD is reuired."
+            isValid = false;
+        }
+        if (data.answer === "") {
+            errors["answer"] = "answer is reuired."
+            isValid = false;
+        }
+        setErrors(errors);
         return isValid;
     }
 
@@ -152,87 +193,91 @@ const AddQuestion = () => {
             <Home />
             <div className="addQuestionForm">
                 <h2>Add Question</h2>
-                    <TextField
-                        error={data.namee === "" && isValid ? true : false}
-                        helperText={errors.namee}
-                        className="questionName"
-                        id="outlined-basic"
-                        variant="outlined"
-                        label="Question Name"
-                        type="text"
-                        name="namee"
-                        onChange={handleChange}
-                    />
-                    <FormControl variant="outlined" className='topic'>
-                        <InputLabel htmlFor="outlined-age-native-simple">Topic</InputLabel>
-                        <Select
-                            native
-                            error={data.topic === '' && isValid ? true : false}
-                            helperText={errors.topic}
-                            onChange={handleChange}
-                            label="Topic"
-                            name='topic'
-                           
-                        >
-                             <option aria-label="None" value='' />
-                            {topics.map(t => (<option value={t._id}>{t.topicName}</option>))}
-                        </Select>
-                    </FormControl>
                 <TextField
-                    error={data.optionA === '' && isValid ? true : false}
+                    error={errors.name !== "" ? true : false}
+                    helperText={errors.name}
+                    className="questionName"
+                    id="outlined-basic"
+                    variant="outlined"
+                    label="Question Name"
+                    type="text"
+                    name="name"
+                    value={data.name}
+                    onChange={handleChange}
+                />
+                <FormControl variant="outlined" className='topic' helperText={errors.topic} error={errors.topic !== "" ? true : false}>
+                    <InputLabel htmlFor="outlined-age-native-simple" >Topic</InputLabel>
+                    <Select
+                        native
+                        value={data.topic}
+                        helperText={errors.topic}
+                        onChange={handleChange}
+                        label="Topic"
+                        name='topic'
+                    >
+                        <option aria-label="None" value="" />
+                        {topics.map(t => (<option value={t._id}>{t.topicName}</option>))}
+                    </Select>
+                    <FormHelperText>
+                        {errors.topic}
+                    </FormHelperText>
+                </FormControl>
+                <TextField
+                    error={errors.optionA !== "" ? true : false}
+                    value={data.optionA}
                     helperText={errors.optionA}
                     className="options"
-                    id="outlined-basic"
+                    id="outlined-basica"
                     variant="outlined"
                     label="OptionA"
                     type="text"
                     name="optionA"
                     onChange={handleChange}
-
                 />
 
                 <TextField
-                    error={data.optionB === '' && isValid ? true : false}
+                    error={errors.optionB !== "" ? true : false}
                     helperText={errors.optionB}
+                    value={data.optionB}
                     className="options"
-                    id="outlined-basic"
+                    id="outlined-basicb"
                     variant="outlined"
                     label="OptionB"
                     type="text"
                     name="optionB"
                     onChange={handleChange}
-
                 />
 
                 <TextField
-                    error={data.optionC === '' && isValid ? true : false}
+                    error={errors.optionC !== "" ? true : false}
                     helperText={errors.optionC}
+                    value={data.optionC}
                     className="options"
-                    id="outlined-basic"
+                    id="outlined-basicc"
                     variant="outlined"
                     label="OptionC"
                     type="text"
                     name="optionC"
                     onChange={handleChange}
-
                 />
 
                 <TextField
-                    error={data.optionD === '' && isValid ? true : false}
+                    error={errors.optionD !== "" ? true : false}
                     helperText={errors.optionD}
+                    value={data.optionD}
                     className="options"
-                    id="outlined-basic"
+                    id="outlined-basicd"
                     variant="outlined"
                     label="OptionD"
                     type="text"
                     name="optionD"
                     onChange={handleChange}
-
                 />
 
                 <TextField
-                    error={data.answer === '' && isValid ? true : false}
+                    error={errors.answer !== "" ? true : false}
                     helperText={errors.answer}
+                    value={data.answer}
                     id="outlined-basic"
                     variant="outlined"
                     label="Answer"
