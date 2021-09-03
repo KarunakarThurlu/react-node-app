@@ -1,0 +1,44 @@
+.table-container{
+  overflow-y: inherit;
+  margin-top: 4.5em;
+  text-align: center;
+  text-align: center;
+  .heading{
+    display: flex;
+    justify-content: space-between;
+    .label{
+      float: left;
+      margin: 10px;
+    }
+    .addbutton{
+      float: right;
+      margin: 10px;
+    }
+  }
+  .MuiTableCell-head{
+    background-color: rgb(18, 33, 245);
+    color: white;
+    font-size: medium;
+    font-weight: bold;
+  }
+}
+
+//Add TopicModel related css
+  .MuiDialog-paper-AddTopicModel{
+    .MuiDialog-paperScrollPaper {
+      flex-direction: column;
+      width: 35em;
+      text-align: center;
+      padding: 15px;
+      .MuiDialogContent-root{
+        .MuiFormControl-root{
+          width: 30em;
+        }
+      }
+      
+    }
+    .MuiDialogActions-root{
+      
+      margin-right: 35px;
+    }
+  }

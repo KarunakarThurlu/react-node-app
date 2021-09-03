@@ -1,4 +1,5 @@
 const Topic = require("../models/TopicsModel");
+const  Question =require("../models/QuestionsModel");
 const User = require("../models/UserModel");
 const GetUserFromToken = require("../utils/GetUserDetailsFromToken");
 
@@ -30,8 +31,10 @@ exports.findTopicById = async (request, response, next) => {
 exports.deleteTopicById = async (request, response, next) => {
     try {
         const topic = await Topic.findById({ _id: request.query.id });
-        if (topic)
+        if (topic){
+            await Question.deleteMany({ topic: topic._id });
             await Topic.findByIdAndDelete({ _id: topic.id }, (errror, doc, res) => response.json({ data: {}, statusCode: "200", message: "Topic Deleted" }));
+        }
         else
             return response.json({ data: {}, statusCode: 400, message: "Not Found" });
     } catch (error) {

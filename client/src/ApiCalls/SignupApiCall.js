@@ -6,7 +6,7 @@ import axios from "axios";
 const SignupApi = {
 
     signUp: async (data) => {
-        return await axios.post(config.Base_URL + "/user/saveuser", data);
+        return  axios.post(config.Base_URL + "/user/saveuser", data);
     }
 
 }

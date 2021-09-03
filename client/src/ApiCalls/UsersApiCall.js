@@ -6,7 +6,7 @@ const UsersApiCalls = {
 
     getAllUsers: async () => {
         const token = await GetAuthToken();
-        return await axios.get("/user/getallusers", {
+        return  axios.get("/user/getallusers", {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -14,7 +14,7 @@ const UsersApiCalls = {
     },
     getUserById: async (id) => {
         const token = await GetAuthToken();
-        return await axios.get(config.Base_URL + `/user/getuser?id=${id}`, {
+        return  axios.get(config.Base_URL + `/user/getuser?id=${id}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -22,7 +22,7 @@ const UsersApiCalls = {
     },
     updateUser: async (data) => {
         const token = await GetAuthToken();
-        return await axios.post(config.Base_URL + "/user/updateuser", data, {
+        return  axios.post(config.Base_URL + "/user/updateuser", data, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -30,7 +30,7 @@ const UsersApiCalls = {
     },
     deleteUser: async (UserId) => {
         const token = await GetAuthToken();
-        return await axios.post(config.Base_URL + `/user/deleteuser?id="${UserId}`, {
+        return  axios.post(config.Base_URL + `/user/deleteuser?id=${UserId}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },

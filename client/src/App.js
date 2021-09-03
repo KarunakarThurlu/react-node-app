@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { ToastContainer, Slide, Zoom, Flip, Bounce, css } from "react-toastify";
+import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Home from "../src/HomeComponent/Home";
@@ -18,14 +18,16 @@ import UserState from "./Context/UserContext/UserState";
 import QuestionState from "./Context/QuestionsContext/QuestionsState";
 import ManageUsers from './ManageUsers/ManageUsers';
 import StartExam from './WriteExamComponent/StartExam';
+import TopicTable from './TopicComponent/TopicTable';
+import TopicState from "./Context/TopicContext/TopicState";
 
 function App() {
   return (
     <BrowserRouter>
       <UserState>
         <QuestionState>
+          <TopicState>
           <Switch>
-
             <PublicRoute restricted={false} component={LandingPage} exact path="/" />
             <PublicRoute restricted={true} component={Login} exact path="/signin" />
             <PublicRoute restricted={true} component={Register} exact path="/signup" />
@@ -35,10 +37,11 @@ function App() {
             <PrivateRoute component={QuestionsTable} exact path="/submitquestion" />
             <PrivateRoute component={ManageUsers} exact path="/manageusers" />
             <PrivateRoute component={AddQuestion} exact path="/addquestion" />
+            <PrivateRoute component={TopicTable} exact path="/topic" />
             <PrivateRoute component={StartExam} exact path="/startexam" />
             <Route component={PageNotFoud} />
-
           </Switch>
+          </TopicState>
         </QuestionState>
       </UserState>
       <ToastContainer

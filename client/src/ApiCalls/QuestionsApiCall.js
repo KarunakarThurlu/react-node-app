@@ -6,7 +6,7 @@ const QuestionsApiCall = {
 
     saveQuestion: async (data) => {
         const token = await GetAuthToken();
-        return await axios.post(config.Base_URL + "/question/savequestion", data, {
+        return  axios.post(config.Base_URL + "/question/savequestion", data, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -14,7 +14,7 @@ const QuestionsApiCall = {
     },
     getAllQuestions: async () => {
         const token = await GetAuthToken();
-        return await axios.get("/question/getallquestions", {
+        return  axios.get("/question/getallquestions", {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -22,7 +22,7 @@ const QuestionsApiCall = {
     },
     getAllQuestionsByTopicId: async (id) => {
         const token = await GetAuthToken();
-        return await axios.get(config.Base_URL + `/question/getquestionsbytopicid?id=${id}`, {
+        return  axios.get(config.Base_URL + `/question/getquestionsbytopicid?id=${id}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -30,7 +30,7 @@ const QuestionsApiCall = {
     },
     getQuestionById: async (id) => {
         const token = await GetAuthToken();
-        return await axios.get(config.Base_URL + `/question/getquestion?id=${id}`, {
+        return  axios.get(config.Base_URL + `/question/getquestion?id=${id}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -38,7 +38,7 @@ const QuestionsApiCall = {
     },
     updateQuestion: async (data) => {
         const token = await GetAuthToken();
-        return await axios.put(config.Base_URL + "/question/updatequestion", data, {
+        return axios.put(config.Base_URL + "/question/updatequestion", data, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -46,7 +46,7 @@ const QuestionsApiCall = {
     },
     getQuestionsCountForDashBoard: async () => {
         const token = await GetAuthToken();
-        return await axios.get(config.Base_URL + "/question/getquestionscountfordashboard", {
+        return  axios.get(config.Base_URL + "/question/getquestionscountfordashboard", {
             headers: {
                 Authorization: `Bearer ` + token,
             },
