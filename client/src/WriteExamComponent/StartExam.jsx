@@ -55,5 +55,4 @@ function StartExam() {
         </div>
     )
 }
-
 export default StartExam

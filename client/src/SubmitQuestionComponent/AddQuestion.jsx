@@ -196,6 +196,8 @@ const AddQuestion = () => {
                 <TextField
                     error={errors.name !== "" ? true : false}
                     helperText={errors.name}
+                    multiline={true}
+                    rows={5}
                     className="questionName"
                     id="outlined-basic"
                     variant="outlined"

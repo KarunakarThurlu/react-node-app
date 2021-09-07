@@ -12,7 +12,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Home from "../HomeComponent/Home";
 import TopicContext from '../Context/TopicContext/TopicContext';
-import DeletePopUpModel from '../Utils/DeletePopUpModel';
+import DeletePopUpModel from '../Utils/WarningPopUpModel';
 import HelperUtils from '../Utils/HelperUtils';
 import TopicModel from './TopicModel';
 import MessageConstants from '../Utils/MessageConstants';
@@ -39,6 +39,8 @@ const TopicTable = () => {
 
   let rows = Topics;
 
+  console.log(Topics);
+  
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -53,7 +55,7 @@ const TopicTable = () => {
   return (
     <div>
       <Home />
-      <DeletePopUpModel open={openDeleteModel} conformDelete={handleConformDelete} message={MessageConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
+      <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={MessageConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
       <TopicModel open={openEditModel}  data={editTopicData} handleClose={() => setOpenEditModel(false)} />
       <TableContainer className="table-container">
         <div className="heading">

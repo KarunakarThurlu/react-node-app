@@ -11,7 +11,7 @@
   }
   .MuiGrid-spacing-xs-5 {
     .MuiPaper-elevation1 {
-      height: 10em;
+      height: 5em;
       margin: 1px;
       align-items: center;
       background: rgb(230, 225, 220);
@@ -22,9 +22,13 @@
       box-shadow: 10px 10px 15px rgb(197, 189, 183), -10px -10px 15px white;
     }
     .chart {
-      .MuiPaper-elevation1 {
-        height: 17em;
-      }
+        height: 20em;
+        width: 43em;
+        div{
+          height: 17em;
+          border-radius: 40px;
+        }
+      
     }
   }
 }

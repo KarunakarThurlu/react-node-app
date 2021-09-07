@@ -1,21 +1,13 @@
-import React,{useState} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { Typography } from '@material-ui/core';
 
 export default function DeletePopUpModel(props) {
-  const [open, setOpen] =useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <div>
@@ -25,17 +17,23 @@ export default function DeletePopUpModel(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Are You Sure? </DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          <Typography color="secondary" variant='h5'>
+             Are You Sure?
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {props.message}
+            <Typography color='primary' variant='h6' component='h6' align='center' >
+              {props.message}
+            </Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.conformDelete} color="primary" variant="outlined" color="secondary">
+          <Button onClick={props.onClickYes}  variant="outlined" color="secondary">
             YES
           </Button>
-          <Button onClick={props.handleClose} color="primary" variant="outlined"  color="secondary" autoFocus>
+          <Button onClick={props.handleClose}  variant="outlined" color="secondary">
             NO
           </Button>
         </DialogActions>

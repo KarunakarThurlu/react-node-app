@@ -39,12 +39,21 @@ function ChangeQuestionStatusModel(props) {
                     <IconButton className="closeButton" onClick={props.onClose}><CloseIcon /></IconButton>
                 </MuiDialogTitle>
                 <MuiDialogContent>
-                    {props.CQData !== undefined ? props.CQData.name : ""}<br /><br />
-                    A.  {props.CQData !== undefined ? props.CQData.optionA : ""}<br />
-                    B.  {props.CQData !== undefined ? props.CQData.optionB : ""}<br />
-                    C.  {props.CQData !== undefined ? props.CQData.optionC : ""}<br />
-                    D.  {props.CQData !== undefined ? props.CQData.optionD : ""}<br />
-
+                    <Typography color='initial' variant='h6' component='h6' align='left' >
+                        {props.CQData !== undefined ? props.CQData.name : ""}
+                    </Typography>
+                    <Typography color='initial' variant='h6' component='h6' align='left' >
+                        A.  {props.CQData !== undefined ? props.CQData.optionA : ""}<br />
+                    </Typography>
+                    <Typography color='initial' variant='h6' component='h6' align='left' >
+                        B.  {props.CQData !== undefined ? props.CQData.optionB : ""}<br />
+                    </Typography>
+                    <Typography color='initial' variant='h6' component='h6' align='left' >
+                        C.  {props.CQData !== undefined ? props.CQData.optionC : ""}<br />
+                    </Typography>
+                    <Typography color='initial' variant='h6' component='h6' align='left' >
+                        D.  {props.CQData !== undefined ? props.CQData.optionD : ""}<br />
+                    </Typography>
                 </MuiDialogContent>
                 <MuiDialogActions>
                     <Button variant="contained" color="primary" disabled={props.CQData && props.CQData.status === "APPROVED" ? true : false} onClick={() => handleClick("APPROVED")}>Approve</Button><Button disabled={props.CQData && props.CQData.status === "APPROVED" ? true : false} variant="contained" color="secondary" onClick={() => handleClick("REJECTED")}>Reject</Button>

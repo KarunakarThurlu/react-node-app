@@ -1,4 +1,4 @@
-import React, { useContext ,useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,34 +9,71 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function TopicModel(props) {
 
-    const[data, setData] = useState({topicName:'',description:''});
-    const[errors, setErrors] = useState({topicName:'',description:''});
-    const {saveTopic } = useContext(TopicContext);
+    const [data, setData] = useState({ topicName: "", description: "", _id: ""});
+    const [errors, setErrors] = useState({ topicName: "", description: "" });
+    const { saveTopic, updateTopic } = useContext(TopicContext);
 
-    const handleSubmit=()=>{
-        if(validate()){
-            saveTopic(data);
-            props.handleClose();
+    console.log(errors);
+
+    useEffect(() => {
+        //Edit Topic data Model
+        if (props.data.topicName !== undefined && props.data.description !== undefined) {
+            setData({
+                topicName: props.data.topicName,
+                description: props.data.description,
+                _id: props.data._id
+            });
+            setErrors({
+                topicName: "",
+                description: ""
+            });
+        } else {
+            //Add Topic data Model
+            setData({
+                topicName: "",
+                description: "",
+            });
+            setErrors({
+                topicName: "",
+                description: ""
+            });
+        }
+    }, [props.data]);
+    const handleSubmit = () => {
+        if (validate()) {
+            if (props.data._id !== undefined && props.data._id !== "") {
+                updateTopic(data);
+                props.handleClose();
+            } else {
+                saveTopic(data);
+                props.handleClose();
+            }
+            setErrors({
+                topicName: "",
+                description: ""
+            });
         }
     }
-    const validate=()=>{
-        let isValid=true;
-        let errors={};
-        if(!data.topicName){
-            isValid=false;
-            errors.topicName='Topic Name is required';
-        }   
-        if(!data.description){
-            isValid=false;
-            errors.description='Topic Name is required';
-        }   
-        setErrors(errors);
+    const validate = () => {
+        let isValid = true;
+        let errorsObj = {};
+        if (data.topicName==="") {
+            isValid = false;
+            errorsObj["topicName"] = "Topic Name is required";
+        }
+        if (data.description==="") {
+            isValid = false;
+            errorsObj["description"] = "Topic Name is required";
+        }
+        setErrors(errorsObj);
         return isValid;
 
     }
-    const handleChange=(e)=>{
-        setData({...data,[e.target.name]:e.target.value});
+    const handleChange = (e) => {
+        setData({ ...data, [e.target.name]: e.target.value });
     }
+
+    
 
     return (
         <div className="AddTopicContainer">
@@ -58,10 +95,10 @@ export default function TopicModel(props) {
                         label="TopicName"
                         type="text"
                         name="topicName"
-                        value={props.data.topicName}
+                        value={data.topicName}
                         onChange={handleChange}
-                    /><br/><br/>
-                     <TextField
+                    /><br /><br />
+                    <TextField
                         error={errors.description !== "" ? true : false}
                         helperText={errors.description}
                         className="Description"
@@ -70,12 +107,12 @@ export default function TopicModel(props) {
                         label="DescriptionName"
                         type="text"
                         name="description"
-                        value={props.data.description}
+                        value={data.description}
                         onChange={handleChange}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button  onClick={handleSubmit} color="primary" variant="contained">
+                    <Button onClick={handleSubmit} color="primary" variant="contained">
                         Submit
                     </Button>
                     <Button onClick={props.handleClose} color="primary" autoFocus variant="contained">

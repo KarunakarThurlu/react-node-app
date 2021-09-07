@@ -8,18 +8,20 @@ import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-
+import Typography from '@material-ui/core/Typography';
 import FormLabel from '@material-ui/core/FormLabel';
 import Button from '@material-ui/core/Button';
-import StartExam from "./StartExam";
+import WarningPopUpModel from "../Utils/WarningPopUpModel"
 import TopicApiCall from "../ApiCalls/TopicApiCall";
 import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 
 import "./writeexam.scss";
 import SelectInput from '@material-ui/core/Select/SelectInput';
+import MessageConstants from '../Utils/MessageConstants';
+import ExamResults from './ExamResults';
 
 function WriteExam(props) {
     const [value, setValue] = useState('');
@@ -31,6 +33,8 @@ function WriteExam(props) {
     const [questionInfo, setQuestionInfo] = useState({});
     let [seconds, setSeconds] = useState(0);
     let [minutes, setMinutes] = useState(20);
+    const [openSubmitWarningModel, setOpenSubmitWarningModel] = useState(false);
+    const [openExamResultsModel, setOpenExamResultsModel] = useState(false);
 
     useEffect(() => {
         TopicApiCall.getAllTopics()
@@ -64,7 +68,7 @@ function WriteExam(props) {
                     }
                 })
                 .catch(error => {
-
+                    console.log(error);
                 })
             setStartExam(true);
             const down = () => {
@@ -77,7 +81,7 @@ function WriteExam(props) {
                     seconds = seconds - 1
                     setSeconds(seconds);
                 }
-                if (minutes <= 0) {
+                if (minutes <= 0 && seconds === 0) {
                     clearInterval(fooo);
                 }
             }
@@ -105,9 +109,24 @@ function WriteExam(props) {
         }
     }
 
+    const showWarning = (e) => {
+        e.preventDefault();
+        setOpenSubmitWarningModel(true)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setOpenExamResultsModel(true);
+        setStartExam(false);
+        setTopicName('')
+        setOpenSubmitWarningModel(false)
+
+    }
     return (
         <div className="write-exam-container">
             <Home />
+            <WarningPopUpModel open={openSubmitWarningModel} message={MessageConstants.Submit_Exam_Warning} onClickYes={handleSubmit} handleClose={() => setOpenSubmitWarningModel(false)} />
+            <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)} />
             {startExam === true ? <Grid container >
                 <Grid item xs={8} sm={8}>
                     <FormControl >
@@ -132,7 +151,7 @@ function WriteExam(props) {
                             </Grid>
                         ))}
                         <div className="submit-button">
-                            <Button variant="contained" >Submit</Button>
+                            <Button variant="contained" onClick={showWarning}>Submit</Button>
                         </div>
                     </Grid>
                 </Grid>
@@ -141,13 +160,14 @@ function WriteExam(props) {
                 :
                 <Grid container spacing={1} className="start-exam">
                     <Grid item xs={8} sm={8}>
-                        <h4>
+                        <Typography color='primary' variant='h6' component='h6' align='center' >
                             The Exam Contains 20 Questions and Time also 20 minutes means each
                             Question has exactly one minute. Before starting the exam you need to select topic
-                            then you can click on start.</h4>
-
+                            then you can click on start.
+                        </Typography>
+                        <br /><br /><br />
                         <FormControl variant="outlined" >
-                            <InputLabel htmlFor="outlined-age-native-simple">Select Topic</InputLabel>
+                            <InputLabel >Select Topic</InputLabel>
                             <Select
                                 native
                                 label="Select Topic"
@@ -158,9 +178,9 @@ function WriteExam(props) {
                                 {topics.map(t => (<option value={t._id}>{t.topicName}</option>))}
                             </Select>
                         </FormControl>
-                        {topicName}
+
                         <br /><br /><br />
-                        <Button variant="contained" onClick={handleClick}>Start</Button>
+                        <Button variant="contained" color='primary' onClick={handleClick}>Start</Button>
 
                     </Grid>
                 </Grid>

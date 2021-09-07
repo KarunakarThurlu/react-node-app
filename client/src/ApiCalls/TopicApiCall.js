@@ -26,6 +26,14 @@ const TopicApiCall = {
                 Authorization: `Bearer ` + token,
             },
         });
+    },
+    updateTopic : async (data)=>{
+        const token = await GetAuthToken();
+        return  axios.put(config.Base_URL + "/topic/updatetopic", data,{
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
     }
 
 }

@@ -8,14 +8,10 @@ const TopicsReducer = (state, action) => {
                 Topics: [...state.Topics, action.payload]
             }
         case TopicActions.UPDATE_TOPIC:
+            let updatedList= state.Topics.map((item) =>item._id===action.payload._id?action.payload:item)
             return {
                 ...state,
-                Topics: state.Topics.map(topic => {
-                    if (topic._id === action.payload.id) {
-                        return action.payload;
-                    }
-                    return topic;
-                })
+                Topics: updatedList
             }
         case TopicActions.DELETE_TOPIC:
             return {
@@ -25,7 +21,7 @@ const TopicsReducer = (state, action) => {
         case TopicActions.GET_TOPIC: {
             return {
                 ...state,
-                Topics:state.Topics.filter(topic => topic._id === action.payload)
+                Topics: state.Topics.filter(topic => topic._id === action.payload)
             }
         }
         case TopicActions.GET_ALL_TOPICS: {

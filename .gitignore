@@ -2,3 +2,7 @@
 .vscode
 node_modules
 
+thunder-tests/thunderActivity.db
+thunder-tests/thunderclient.db
+thunder-tests/thunderCollection.db
+thunder-tests/thunderEnvironment.db

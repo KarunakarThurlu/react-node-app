@@ -78,11 +78,22 @@ const TopicsState = (props) => {
             })
     }
 
-    const updateTopic = (data) => {
-        dispatch({
-            type: TopicActions.UPDATE_Topic,
-            payload: data
-        })
+    const updateTopic = async(data) => {
+        await TopicApiCall.updateTopic(data)
+            .then(response => { 
+                if (response.data.statusCode === 200) {
+                    Notifier.notify("Topic Updated Successfully", Notifier.notificationType.SUCCESS);
+                    dispatch({
+                        type: TopicActions.UPDATE_TOPIC,
+                        payload: response.data.data
+                    })
+                } else {
+                    Notifier.notify(response.data.message, Notifier.notificationType.ERROR);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     return (
