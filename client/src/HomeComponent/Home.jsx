@@ -1,21 +1,25 @@
 import React, { useState } from 'react'
 import { AppBar, Toolbar, IconButton, Button, Typography } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu"
+import PersonIcon from '@material-ui/icons/Person';
+import LogOutIcon from '@material-ui/icons/PowerSettingsNew';
+import SettingsIcon from '@material-ui/icons/Settings';
 import AccountCircleSharpIcon from '@material-ui/icons/AccountCircleSharp';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import config from "../ApiCalls/Config";
 import { withRouter } from "react-router-dom";
-
-import "./navbar.css";
 import Notifier from '../Utils/Notifier';
 import Sidebar from './Sidebar';
+
+import './sidebar.scss';
+
 
 function NavBar(props) {
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [isAdmin,setIsAdmin]=useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
 
     const handleClose = () => {
@@ -33,12 +37,12 @@ function NavBar(props) {
         setAnchorEl(event.currentTarget);
     }
 
-   const handleMenuClick = () =>{
-    setSidebarOpen(true)
-    setIsAdmin(localStorage.getItem("isAdmin"));
-   }
+    const handleMenuClick = () => {
+        setSidebarOpen(true)
+        setIsAdmin(localStorage.getItem("isAdmin"));
+    }
     return (
-        <div>
+        <div className="home-container">
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
@@ -46,9 +50,24 @@ function NavBar(props) {
                 open={anchorEl}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={logout}>Logout</MenuItem>
+                <MenuItem onClick={handleClose}>
+                    <PersonIcon style={{paddingRight:"4px"}} />
+                    <Typography >
+                        Profile
+                    </Typography>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                    <SettingsIcon  style={{paddingRight:"4px"}}  />
+                    <Typography >
+                        Account
+                    </Typography>
+                </MenuItem>
+                <MenuItem onClick={logout}>
+                    <LogOutIcon  style={{paddingRight:"4px"}}  />
+                    <Typography >
+                        Logout
+                    </Typography>
+                </MenuItem>
             </Menu>
             <AppBar title="Java Quiz Application" variant="elevation" className="nav-bar">
                 <Toolbar>

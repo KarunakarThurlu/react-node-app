@@ -19,20 +19,13 @@
 //Add&Edit Question Model Related Styles
 .MuiDialog-paper-AddQuestionModel {
   .MuiDialog-paperScrollPaper {
-    flex-direction: column;
-    width: 35em;
-    text-align: center;
-    padding: 15px;
-    .MuiSvgIcon-root {
-      margin-left: 14em;
+    width: 45em;
+    align-items: center;
+    .MuiFormControl-root{
+      width: 30em;
+      margin: 10px 0px 10px 30px;
     }
-    .MuiFormControl-root {
-      width: 28em;
-    }
-    .MuiButtonBase-root {
-      width: 8em;
-      margin: 5px;
-    }
+   
   }
 }
 

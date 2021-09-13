@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import Home from '../HomeComponent/Home'
@@ -14,28 +14,45 @@ import "./dashboard.scss"
 import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 
 function DashBoard() {
-  const [totalQuestions, setTotalQuestions] = useState(0);
-  const [approvedQuestions, setApprovedQuestions] = useState(0);
-  const [rejectedQuestions, setRejectedQuestions] = useState(0);
-  const [pendingQuestions, setPendingQuestions] = useState(0);
+  const [questions, setQuestions] = useState({});
+  const [xaxisData, setXaxisData] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
-  QuestionsApiCall.getQuestionsCountForDashBoard()
-    .then(response => {
-      setApprovedQuestions(response.data.approvedQuestionsCount);
-      setRejectedQuestions(response.data.rejectedQuestionsCount);
-      setPendingQuestions(response.data.pendingQuestionsCount);
-      setTotalQuestions(response.data.totalQuestionsCount);
-    })
-    .catch(error => {
-      console.log(error);
-    })
-
+  useEffect(() => {
+    fetchDataForDashBoard();
+  }, []);
+  const fetchDataForDashBoard = () => {
+    QuestionsApiCall.getQuestionsCountForDashBoard()
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          setQuestions(response.data.data);
+          let xaxis = [];
+          let series = [];
+          response.data.data.topics.map((v, i) => {
+            xaxis.push(v.topicName);
+            let topic = response.data.data.topicCount.find(x => x._id === v._id);
+            if (topic) {
+              series.push(topic.count);
+            } else {
+              series.push(0);
+            }
+          });
+          setXaxisData(xaxis);
+          setChartData(series);
+        } else {
+          console.log("Error in getting questions count for dashboard");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
   const bar = {
     chart: {
       type: "spline",
     },
     title: {
-      text: 'QuestionsCount By QuestionsStatus',
+      text: 'QuestionsCount By TopicName',
     },
     yAxis: [
       {
@@ -48,9 +65,9 @@ function DashBoard() {
       }
     ],
     xAxis: {
-      categories: ['Inproges', 'Approved','Rejected', 'Total',"foo","bar"],
+      categories: xaxisData,
       title: {
-        text: 'Question Status',
+        text: 'TopicName',
       },
     },
     style: {
@@ -63,9 +80,9 @@ function DashBoard() {
     colors: ["#001177"],
     series: [
       {
-        name: "Questions",
-        data: [pendingQuestions, approvedQuestions,rejectedQuestions,  totalQuestions,10,23],
-      }, 
+        name: "QuestionsCount",
+        data: chartData,
+      },
     ],
   };
 
@@ -75,22 +92,22 @@ function DashBoard() {
       <h4>Questions DashBoard</h4>
       <Grid container spacing={5}>
         <Grid item xs={6} sm={3}>
-          <Paper ><AccessAlarmsRoundedIcon style={{ color: "orange", fontSize: "3em" }} />InProgress <b> <h3>{pendingQuestions}</h3> </b>  </Paper>
+          <Paper ><AccessAlarmsRoundedIcon style={{ color: "orange", fontSize: "3em" }} />InProgress <b> <h3>{questions.PENDING}</h3> </b>  </Paper>
         </Grid>
         <Grid item xs={6} sm={3}>
-          <Paper > <CheckRoundedIcon style={{ color: "green", fontSize: "3em" }} />Approved <b> <h3>{approvedQuestions}</h3> </b> </Paper>
+          <Paper > <CheckRoundedIcon style={{ color: "green", fontSize: "3em" }} />Approved <b> <h3>{questions.APPROVED}</h3> </b> </Paper>
         </Grid>
         <Grid item xs={6} sm={3}>
-          <Paper > <ClearRoundedIcon style={{ color: "red", fontSize: "3em" }} />Rejected <b> <h3>{rejectedQuestions}</h3> </b></Paper>
+          <Paper > <ClearRoundedIcon style={{ color: "red", fontSize: "3em" }} />Rejected <b> <h3>{questions.REJECTED}</h3> </b></Paper>
         </Grid>
         <Grid item xs={6} sm={3}>
-          <Paper ><BarChartRoundedIcon style={{ fontSize: "3em" }} />Total Questions <b> <h3>{totalQuestions}</h3> </b></Paper>
+          <Paper ><BarChartRoundedIcon style={{ fontSize: "3em" }} />Total Questions <b> <h3>{questions.totalCount}</h3> </b></Paper>
         </Grid>
         <Grid item xs={12} className="chart" >
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={bar}
-              />
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={bar}
+          />
         </Grid>
       </Grid>
     </div >

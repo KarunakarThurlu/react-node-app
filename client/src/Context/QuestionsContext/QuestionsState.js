@@ -27,7 +27,7 @@ const QuestionsState = (props) => {
                     Notifier.notify( response.data.message, Notifier.notificationType.ERROR);
                 }
             }).catch(error => {
-
+                console.log(" While Saving Question ===> ",error);
             })
 
     }
@@ -46,7 +46,7 @@ const QuestionsState = (props) => {
                 }
             })
             .catch(error => {
-
+                console.log("While Getting Question ===> ", error);
             });
     }
     const deleteQuestion = async (id) => {
@@ -60,7 +60,7 @@ const QuestionsState = (props) => {
                 }
             })
             .catch(error => {
-
+                console.log("While Deleting Question ===> ", error);
             });
     }
 
@@ -73,15 +73,26 @@ const QuestionsState = (props) => {
                 })
             })
             .catch(error => {
-                console.log(error);
+                console.log("While Getting All Questions ===> ", error);
             })
     }
 
-    const updateQuestion = (data) => {
-        dispatch({
-            type: QuestionActions.UPDATE_QUESTION,
-            payload: data
-        })
+    const updateQuestion = async (data) => {
+        await QuestionApiCall.updateQuestion(data)
+            .then(response => {
+                if (response.data.statusCode === 200) {
+                    Notifier.notify(response.data.message, Notifier.notificationType.SUCCESS);
+                    dispatch({
+                        type: QuestionActions.UPDATE_QUESTION,
+                        payload: response.data.data
+                    })
+                } else {
+                    Notifier.notify(response.data.message, Notifier.notificationType.ERROR);
+                }
+            })
+            .catch(error => {
+                console.log("While Updating Question ===> ", error);
+            });
     }
 
     return (

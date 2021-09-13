@@ -1,6 +1,30 @@
+//Home Component Related Styles
+.home-container {
+  .MuiPaper-root {
+    .MuiToolbar-root {
+      .MuiSvgIcon-root {
+        color: white;
+      }
+      .MuiTypography-h6 {
+        text-align: center;
+      }
+
+      .MuiTypography-root {
+        flex-grow: 1;
+      }
+    }
+  }
+}
+
+//Sidebar related changes
 .sidebar {
+  text-decoration: none;
   .MuiDrawer-root {
     .MuiPaper-root {
+      .MuiMenuItem-root-sidebar {
+        text-decoration: none;
+        padding: 6px;
+      }
       .MuiMenuItem-root {
         line-height: 2.5;
       }

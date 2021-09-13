@@ -14,11 +14,11 @@ import "./manageusers.scss";
 
 function ManageUsers(props) {
 
-    const [open, setOpen] = useState(false)
-    const { getAllUsers, users, deleteUser } = useContext(UserContext);
+    const [open, setOpen] = useState(false);
+    const { getAllUsers,users, deleteUser } = useContext(UserContext);
 
     useEffect(() => {
-        getAllUsers();
+         getAllUsers(); 
     }, [])
 
     const columns =
@@ -27,15 +27,13 @@ function ManageUsers(props) {
             { field: 'email', title: 'Email', },
             { field: 'gender', title: 'Gender', },
             { field: 'name', title: 'User name', },
-            { field: 'companyname', title: 'CompanyName', },
+            { field: 'status', title: 'status', },
             { field: 'createdOn', title: 'createdOn', },
             { field: 'updatedOn', title: 'updatedOn', },
             { field: '', title: '', },
         ];
 
-    const usrs = [];
-
-    if (users !== undefined) {
+    if (users.length !== 0) {
         users.map((q, i) => {
             q.companyname = q.company !== null?q.company.name:"";
             q.createdOn = moment(q.createdOn).format("YYYY-MM-DD");

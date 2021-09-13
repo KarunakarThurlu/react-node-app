@@ -20,6 +20,7 @@ import ManageUsers from './ManageUsers/ManageUsers';
 import StartExam from './WriteExamComponent/StartExam';
 import TopicTable from './TopicComponent/TopicTable';
 import TopicState from "./Context/TopicContext/TopicState";
+import ExamsTable from './WriteExamComponent/ExamsTable';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <PrivateRoute component={ManageUsers} exact path="/manageusers" />
             <PrivateRoute component={AddQuestion} exact path="/addquestion" />
             <PrivateRoute component={TopicTable} exact path="/topic" />
+            <PrivateRoute component={ExamsTable} exact path="/examsdetails" />
             <PrivateRoute component={StartExam} exact path="/startexam" />
             <Route component={PageNotFoud} />
           </Switch>

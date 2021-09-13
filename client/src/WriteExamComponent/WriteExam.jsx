@@ -35,6 +35,7 @@ function WriteExam(props) {
     let [minutes, setMinutes] = useState(20);
     const [openSubmitWarningModel, setOpenSubmitWarningModel] = useState(false);
     const [openExamResultsModel, setOpenExamResultsModel] = useState(false);
+    const [testScore, setTestScore] = useState(0);
 
     useEffect(() => {
         TopicApiCall.getAllTopics()
@@ -116,26 +117,34 @@ function WriteExam(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setOpenExamResultsModel(true);
-        setStartExam(false);
-        setTopicName('')
-        setOpenSubmitWarningModel(false)
-
+        QuestionsApiCall.getTestResults(questions,0,topicName)
+        .then(response => {
+            if (response.data.statusCode === 200) {
+                setTestScore(response.data.testScore);
+                setOpenExamResultsModel(true);
+                setStartExam(false);
+                setTopicName('')
+                setOpenSubmitWarningModel(false)
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
     }
     return (
         <div className="write-exam-container">
             <Home />
             <WarningPopUpModel open={openSubmitWarningModel} message={MessageConstants.Submit_Exam_Warning} onClickYes={handleSubmit} handleClose={() => setOpenSubmitWarningModel(false)} />
-            <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)} />
+            <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)}  testScore={testScore}/>
             {startExam === true ? <Grid container >
                 <Grid item xs={8} sm={8}>
                     <FormControl >
                         <FormLabel >{questionInfo.id}.{questionInfo.name}</FormLabel>
                         <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                            <FormControlLabel value="optionA" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionA" ? true : false} />} label={questionInfo.optionA} />
-                            <FormControlLabel value="optionB" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionB" ? true : false} />} label={questionInfo.optionB} />
-                            <FormControlLabel value="optionC" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionC" ? true : false} />} label={questionInfo.optionC} />
-                            <FormControlLabel value="optionD" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "optionD" ? true : false} />} label={questionInfo.optionD} />
+                            <FormControlLabel value="A" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "A" ? true : false} />} label={questionInfo.optionA} />
+                            <FormControlLabel value="B" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "B" ? true : false} />} label={questionInfo.optionB} />
+                            <FormControlLabel value="C" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "C" ? true : false} />} label={questionInfo.optionC} />
+                            <FormControlLabel value="D" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "D" ? true : false} />} label={questionInfo.optionD} />
                         </RadioGroup>
                         <div className="next-buttons">
                             <Button variant="contained" color="primary" onClick={e => handleNextButtons("PreviousQuestion")}><SkipPreviousRoundedIcon style={{ color: "white" }} /></Button><Button variant="contained" color="primary" onClick={(e) => handleNextButtons("NextQuestion")}><SkipNextRoundedIcon style={{ color: "white" }} /></Button>

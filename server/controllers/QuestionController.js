@@ -1,4 +1,6 @@
 const Question = require("../models/QuestionsModel");
+const Exam = require("../models/ExamModel");
+const Topic = require("../models/TopicsModel");
 const GetUserFromToken = require("../utils/GetUserDetailsFromToken");
 
 
@@ -63,7 +65,7 @@ exports.getAllQuestions = async (request, response, next) => {
         const pageNumber = request.body.pageNumber || 0;
         const pageSize = request.body.pageSize || 30;
         const totalCount = await Question.find().count();
-        const questions = await Question.find({}, { answer: false })
+        const questions = await Question.find({})
             .populate({ path: "creator", select: ["name", "email"] })
             .populate({ path: "topic", select: "topicName" })
             .skip(pageNumber).limit(pageSize);
@@ -100,15 +102,77 @@ exports.getAllQuestionsByTopicId = async (request, response, next) => {
 exports.getquestionscountforDashboard = async (request, response, next) => {
     let user = await GetUserFromToken.getUserDetailsFromToken(request);
     try {
-        const totalQuestionsCount = await Question.find({creator:user._id}).count();
-        const approvedQuestionsCount = await Question.find({ status: "APPROVED",creator:user._id }).count();
-        const rejectedQuestionsCount = await Question.find({ status: "REJECTED",creator:user._id }).count();
-        const pendingQuestionsCount = await Question.find({ status: "PENDING",creator:user._id }).count();
+        let data = {};
+        let chartData= {};
+        let Xaxis = [];
+        let series = [];
+        let questions = await Question.aggregate([
+            { $match: { creator: user._id } },
+            { $group: { _id: "$status", count: { $sum: 1 } } }
+        ]);
+        questions.map((v, i) => { data[v._id] = v.count });
+        let totalcount = questions.reduce((accumulator, question) => accumulator + question.count, 0);
+        data["totalCount"] = totalcount;
 
-        if (totalQuestionsCount || approvedQuestionsCount || rejectedQuestionsCount || pendingQuestionsCount) {
-            return response.json({ totalQuestionsCount: totalQuestionsCount, approvedQuestionsCount: approvedQuestionsCount, rejectedQuestionsCount: rejectedQuestionsCount, pendingQuestionsCount: pendingQuestionsCount, statusCode: 200, message: "OK" });
+        let topicsCount = await Question.aggregate([
+            { $match: { creator: user._id } },
+            { $group: { _id: "$topic", count: { $sum: 1 } } }
+        ]);
+        let topics= await Topic.find({}).select("topicName _id");
+
+
+        data["topics"] = topics;
+        data["topicCount"]=topicsCount;
+
+        data["chartData"] = chartData;
+
+        if (questions) {
+            return response.json({ data: data, statusCode: 200, message: "OK" });
         } else {
             return response.json({ data: {}, statusCode: 400, message: "Not Found" });
+        }
+    } catch (error) {
+        return response.json({ data: {}, statusCode: 500, message: error.message });
+    }
+}
+
+exports.getTestScore = async (request, response, next) => {
+    let user = await GetUserFromToken.getUserDetailsFromToken(request);
+    try {
+        if (request.query.id === undefined) {
+            return response.json({ "data": {}, "statusCode": "400", "message": "Required Parameter topicId is not present" });
+        } else {
+            const pageNumber = request.query.pageNumber || 0;
+            const pageSize = request.query.pageSize || 20;
+            const questions = await Question.find({ topic: request.query.id }).skip(parseInt(pageNumber)).limit(parseInt(pageSize));
+            if (questions) {
+                const answeredQuestions = request.body;
+
+                //Finding the correct answer
+                let testScore = 0;
+                questions.map((question, index) => {
+                    const answeredQuestion = answeredQuestions[index];
+                    if (question.answer === answeredQuestion.answer) {
+                        testScore += 1;
+                    }
+                });
+
+                //Saving Exam Details
+                const topic = await Topic.findOne({ _id: request.query.id });
+                const examResults = new Exam({
+                    Name: user.name,
+                    Email: user.email,
+                    TestScore: testScore,
+                    TopicName: topic.topicName,
+                    Date: Date.now()
+                });
+                await examResults.save();
+
+
+                return response.json({ testScore: testScore, statusCode: 200, message: "OK" });
+            } else {
+                return response.json({ data: {}, statusCode: 400, message: "Not Found" });
+            }
         }
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });

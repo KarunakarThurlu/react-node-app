@@ -28,12 +28,12 @@ export default function ExamResultsModel(props) {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         <Typography color='primary' variant='h6' component='h6' align='center' >
-                            {props.message}
+                           Your Test Score : {props.testScore}
                         </Typography>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={props.handleClose} variant="outlined" color="secondary">
+                    <Button onClick={props.handleClose} variant="outlined" color="primary">
                         Close
                     </Button>
                 </DialogActions>

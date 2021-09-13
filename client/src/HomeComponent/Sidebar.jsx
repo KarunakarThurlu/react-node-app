@@ -5,6 +5,15 @@ import { Link } from "react-router-dom"
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Divider from '@material-ui/core/Divider';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import WebAssetIcon from '@material-ui/icons/WebAsset';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import GroupIcon from '@material-ui/icons/Group';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import LayersIcon from '@material-ui/icons/Layers';
+import Typography from '@material-ui/core/Typography';
+
 
 
 
@@ -15,33 +24,71 @@ function Sidebar(props) {
             <Drawer variant="persistent"
                 anchor="left" openSecondary={true} open={props.open} >
                 <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", height: "4.0em", backgroundColor: "hsl(231deg 48% 48%)" }}>
-                    <IconButton onClick={props.onHide} ><CloseIcon style={{ color: "white", fontSize: "2.5rem" }} /></IconButton>
+                    <h1>Logo</h1>
+                    <IconButton onClick={props.onHide} >
+                        <CloseIcon style={{ color: "white", fontSize: "2.5rem" }} />
+                    </IconButton>
                 </div>
                 <Divider />
                 <MenuItem onClick={props.onHide} >
-                    <Link to="/dashboard" className="MuiMenuItem-root-sidebar">Dashboard</Link>
+                    <DashboardIcon />
+                    <Link to="/dashboard" className="MuiMenuItem-root-sidebar">
+                        <Typography variant="h6">
+                            Dashboard
+                        </Typography>
+                    </Link>
                 </MenuItem>
                 <MenuItem onClick={props.onHide}>
-                    <Link to="/writeexam" className="MuiMenuItem-root-sidebar">WriteExam</Link>
+                    <AssignmentIcon />
+                    <Link to="/writeexam" className="MuiMenuItem-root-sidebar">
+                        <Typography variant="h6">
+                            WriteExam
+                        </Typography>
+                    </Link>
                 </MenuItem>
                 <MenuItem onClick={props.onHide}>
-                    <Link to="/addquestion" className="MuiMenuItem-root-sidebar">Add Question</Link>
+                    <AddToQueueIcon />
+                    <Link to="/addquestion" className="MuiMenuItem-root-sidebar">
+                        <Typography variant="h6">
+                            Add Question
+                        </Typography>
+                    </Link>
                 </MenuItem>
-                {props.isAdmin==="true"?
-                <>
-                <MenuItem onClick={props.onHide} >
-                    <Link to="/submitquestion" className="MuiMenuItem-root-sidebar">Questions</Link>
-                </MenuItem>
-                <MenuItem onClick={props.onHide}>
-                    <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Users</Link>
-                </MenuItem>
-                <MenuItem onClick={props.onHide}>
-                    <Link to="/topic" className="MuiMenuItem-root-sidebar">Topics</Link>
-                </MenuItem>
-                <MenuItem onClick={props.onHide}>
-                    <Link to="/manageusers" className="MuiMenuItem-root-sidebar">Exams</Link>
-                </MenuItem>
-                </>:""}
+                {props.isAdmin === "true" ?
+                    <>
+                        <MenuItem onClick={props.onHide} >
+                            <MenuBookIcon />
+                            <Link to="/submitquestion" className="MuiMenuItem-root-sidebar">
+                                <Typography variant="h6">
+                                    Questions
+                                </Typography>
+                            </Link>
+                        </MenuItem>
+                        <MenuItem onClick={props.onHide}>
+                            <GroupIcon />
+                            <Link to="/manageusers" className="MuiMenuItem-root-sidebar">
+                                <Typography variant="h6">
+                                    Users
+                                </Typography>
+                            </Link>
+                        </MenuItem>
+                        <MenuItem onClick={props.onHide}>
+                            <LayersIcon />
+                            <Link to="/topic" className="MuiMenuItem-root-sidebar">
+                                <Typography variant="h6">
+                                    Topics
+                                </Typography>
+                            </Link>
+                        </MenuItem>
+                        <MenuItem onClick={props.onHide}>
+                            <WebAssetIcon />
+                            <Link to="/examsdetails" className="MuiMenuItem-root-sidebar">
+                                <Typography variant="h6">
+                                    Exams
+                                </Typography>
+                            </Link>
+                        </MenuItem>
+                    </> : ""}
             </Drawer>
         </div>
     )

@@ -8,6 +8,7 @@ const userRouter = require("./routers/UserRouter");
 const companyRouter = require("./routers/CompanyRouter");
 const topicRouter = require("./routers/TopicRouter");
 const questionRouter = require("./routers/QuestionRouter");
+const examsRouter = require("./routers/ExamsRouter");
 
 
 const PORT = process.env.PORT || 3001
@@ -48,6 +49,7 @@ app.use("/user", userRouter);
 app.use("/company", companyRouter);
 app.use("/topic", topicRouter);
 app.use("/question", questionRouter);
+app.use("/exams", examsRouter);
 
 
 

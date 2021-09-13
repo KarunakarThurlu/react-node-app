@@ -9,34 +9,23 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function TopicModel(props) {
 
-    const [data, setData] = useState({ topicName: "", description: "", _id: ""});
+    const [data, setData] = useState({ topicName: "", description: "", _id: "" });
     const [errors, setErrors] = useState({ topicName: "", description: "" });
     const { saveTopic, updateTopic } = useContext(TopicContext);
 
-    console.log(errors);
+    const clearErros = () => {
+        setErrors({ topicName: "", description: "" });
+    }
 
     useEffect(() => {
         //Edit Topic data Model
         if (props.data.topicName !== undefined && props.data.description !== undefined) {
-            setData({
-                topicName: props.data.topicName,
-                description: props.data.description,
-                _id: props.data._id
-            });
-            setErrors({
-                topicName: "",
-                description: ""
-            });
+            setData({ topicName: props.data.topicName, description: props.data.description, _id: props.data._id });
+            clearErros();
         } else {
-            //Add Topic data Model
-            setData({
-                topicName: "",
-                description: "",
-            });
-            setErrors({
-                topicName: "",
-                description: ""
-            });
+        //Add Topic data Model
+            setData({ topicName: "", description: "", _id: "" });
+            clearErros();
         }
     }, [props.data]);
     const handleSubmit = () => {
@@ -48,20 +37,17 @@ export default function TopicModel(props) {
                 saveTopic(data);
                 props.handleClose();
             }
-            setErrors({
-                topicName: "",
-                description: ""
-            });
+            clearErros();
         }
     }
     const validate = () => {
         let isValid = true;
         let errorsObj = {};
-        if (data.topicName==="") {
+        if (data.topicName === "") {
             isValid = false;
             errorsObj["topicName"] = "Topic Name is required";
         }
-        if (data.description==="") {
+        if (data.description === "") {
             isValid = false;
             errorsObj["description"] = "Topic Name is required";
         }
@@ -73,7 +59,7 @@ export default function TopicModel(props) {
         setData({ ...data, [e.target.name]: e.target.value });
     }
 
-    
+
 
     return (
         <div className="AddTopicContainer">

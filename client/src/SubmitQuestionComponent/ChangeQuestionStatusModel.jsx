@@ -36,7 +36,7 @@ function ChangeQuestionStatusModel(props) {
         <div>
             <Dialog onClose={props.onClose} open={props.open} className="MuiDialog-paper-ChangeQuestionStatusModel">
                 <MuiDialogTitle>
-                    <IconButton className="closeButton" onClick={props.onClose}><CloseIcon /></IconButton>
+                    <IconButton  className="closeButton" onClick={props.onClose}><CloseIcon /></IconButton>
                 </MuiDialogTitle>
                 <MuiDialogContent>
                     <Typography color='initial' variant='h6' component='h6' align='left' >

@@ -12,9 +12,11 @@ import ChangeQuestionStatusModel from "./ChangeQuestionStatusModel";
 import FilterListTwoToneIcon from '@material-ui/icons/FilterListTwoTone';
 import MaterialTable from 'material-table';
 import Tooltip from '@material-ui/core/Tooltip';
+import WarningPopupModel from "../Utils/WarningPopUpModel"
 
 import "./AddQuestions.scss";
 import QuestionsContext from '../Context/QuestionsContext/QuestionsContext';
+import MessageConstants from '../Utils/MessageConstants';
 
 
 const LightTooltip = withStyles((theme) => ({
@@ -30,16 +32,20 @@ const LightTooltip = withStyles((theme) => ({
 function SubmitQuestion(props) {
 
     const [open, setOpen] = useState(false);
+    const [formDataToEdit, setFormDataToEdit] = useState({});
     const [statusModelOpen, setStatusModelOpen] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState();
+    const [showWarningPopup, setShowWarningPopup] = useState(false);
+    const [questionIdForDelete, setQuestionIdForDelete] = useState(0);
     const { getAllQuestions, questions, deleteQuestion } = useContext(QuestionsContext);
 
     useEffect(() => {
         getAllQuestions();
     }, []);
 
-    const handleDeleteClick = (id) => {
-        deleteQuestion(id)
+    const handleDeleteQuestion = () => {
+        deleteQuestion(questionIdForDelete);
+        setShowWarningPopup(false);
     }
     const columns =
         [
@@ -85,8 +91,8 @@ function SubmitQuestion(props) {
                 },
             },
             {
-                field: 'status', title: 'Status',
-                render: (params) => (<Button variant="text" style={{ color: params.status === "APPROVED" ? '#388e3c' : params.status === "PENDING" ? "#f57c00" : "#d32f2f" }} onClick={() => { setStatusModelOpen(true); setCurrentQuestion(params) }}>{params.status} </Button>)
+                field: 'status', title: 'Status',align: 'center',
+                render: (params) => (<Button variant="contained" style={{ color: params.status === "APPROVED" ? '#388e3c' : params.status === "PENDING" ? "#f57c00" : "#d32f2f",width:"10em" }} onClick={() => { setStatusModelOpen(true); setCurrentQuestion(params) }}>{params.status} </Button>)
             },
             {
                 field: 'updatedOn', title: 'Update Date', cellStyle: {
@@ -115,7 +121,8 @@ function SubmitQuestion(props) {
         <div className="questions-container">
             <Home />
             <ChangeQuestionStatusModel updateQuestion={updateQuestioninList} open={statusModelOpen} CQData={currentQuestion} onClose={() => setStatusModelOpen(false)} />
-            <SubmitQuestionModel open={open} CQData={currentQuestion} onClose={() => setOpen(false)} />
+            <SubmitQuestionModel open={open} editFormData={formDataToEdit} CQData={currentQuestion} onClose={() => setOpen(false)} />
+            <WarningPopupModel open={showWarningPopup} message={MessageConstants.Delete_Question_Warning} onClickYes={handleDeleteQuestion} handleClose={() => setShowWarningPopup(false)} />
             <div className="Questions-Table">
                 <MaterialTable
                     title="Questions Data Table"
@@ -127,7 +134,7 @@ function SubmitQuestion(props) {
                     pageSize={10}
 
                     actions={[{
-                        icon: () => <AddIcon onClick={() => setOpen(true)} />,
+                        icon: () => <AddIcon onClick={() => {setOpen(true);setFormDataToEdit(null)}} />,
                         tooltip: "Add Question",
                         isFreeAction: true
                     }, {
@@ -138,15 +145,17 @@ function SubmitQuestion(props) {
                     rowData => ({
                         icon: () => <EditIcon />,
                         tooltip: 'Edit',
-                        onClick: (event, rowData) => {
-                            console.log(rowData)
+                        onClick: (event, currentRowData) => {
+                            setFormDataToEdit(currentRowData);
+                            setOpen(true);
                         },
                     }),
                     rowData => ({
                         icon: () => <DeleteIcon color="secondary" />,
                         tooltip: 'Delete',
-                        onClick: (event, rowData) => {
-                            deleteQuestion(rowData._id)
+                        onClick: (event, currentRowData) => {
+                            setQuestionIdForDelete(currentRowData._id);
+                            setShowWarningPopup(true);
                         },
                     })
                     ]}
