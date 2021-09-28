@@ -21,6 +21,7 @@ import StartExam from './WriteExamComponent/StartExam';
 import TopicTable from './TopicComponent/TopicTable';
 import TopicState from "./Context/TopicContext/TopicState";
 import ExamsTable from './WriteExamComponent/ExamsTable';
+import ForgotPassword from "./RegisterComponent/ForgotPassword";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <PublicRoute restricted={false} component={LandingPage} exact path="/" />
             <PublicRoute restricted={true} component={Login} exact path="/signin" />
             <PublicRoute restricted={true} component={Register} exact path="/signup" />
+            <PublicRoute restricted={false} component={ForgotPassword} exact path="/forgotpassword" />
             <PrivateRoute component={Home} exact path="/home" />
             <PrivateRoute component={DashBoard} exact path="/dashboard" />
             <PrivateRoute component={WriteExam} exact path="/writeexam" />

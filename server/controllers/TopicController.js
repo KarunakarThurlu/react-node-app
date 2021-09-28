@@ -30,7 +30,7 @@ exports.updateTopic = async (request, response, next) => {
                 topic._doc[keys[i]] = request.body[v];
             });
             topic.creator=requestUser._id;
-            const updatedTopic = await await Topic.findByIdAndUpdate({ _id: request.body._id }, topic, (error, doc, res) => { });
+            const updatedTopic =  await Topic.findByIdAndUpdate({ _id: request.body._id }, topic, (error, doc, res) => { });
             return response.json({ data: updatedTopic, statusCode: 200, message: "Topic Updated Successfully." });
         } else {
             return response.json({ data: {}, statusCode: 400, message: "Not Found" });

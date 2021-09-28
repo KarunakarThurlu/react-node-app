@@ -3,6 +3,10 @@ const Role = require("../models/RoleModel");
 const bcrypt = require("bcryptjs");
 const JWTUtil = require("../utils/JWTUtil");
 const jwt = require("jsonwebtoken");
+const GetUserFromToken = require("../utils/GetUserDetailsFromToken");
+const fs = require("fs");
+var multer = require('multer');
+
 
 
 //login
@@ -23,6 +27,25 @@ exports.login = async (request, response, next) => {
         return response.json({ data: {}, statusCode: 500, message: error.message });
     }
 };
+
+
+
+exports.uploadProfilePicture = async (request, response, next) => {
+    const requestUser = await GetUserFromToken.getUserDetailsFromToken(request);
+    try {
+        const url = request.protocol + '://' + request.get('host')
+        let userFromDB = await User.findOne({ _id: requestUser._id });
+        if (userFromDB) {
+            await User.findByIdAndUpdate({ _id: requestUser._id }, { $set: { profilePicture: url + '/uploads/' + request.file.filename } });
+            return response.json({ data: {}, statusCode: 200, message: "Profile Picture Uploaded Successfully!" });
+        } else {
+            return response.json({ data: {}, statusCode: 400, message: "User Not Found!" });
+        }
+    } catch (error) {
+        return response.json({ data: {}, statusCode: 500, message: error.message });
+    }
+};
+
 
 exports.saveUser = async (request, response, next) => {
     try {
@@ -46,11 +69,11 @@ exports.saveUser = async (request, response, next) => {
         }
 
         let userObj = new User({
-            name: request.body.name,
+            firstName: request.body.firstName,
+            lastName: request.body.lastName,
             email: request.body.email,
             phoneNumber: request.body.phoneNumber,
-            company: "60c454963a835c5100f85998",
-            password: bcrypt.hashSync(request.body.password, 10),
+            password: bcrypt.hashSync(request.body.password || "Welcome@123", 10),
             gender: request.body.gender,
             roles: roles
         });
@@ -61,15 +84,32 @@ exports.saveUser = async (request, response, next) => {
     }
 }
 
+exports.changePassword = async (request, response, next) => {
+    try {   
+        const requestUser = await GetUserFromToken.getUserDetailsFromToken(request);
+        let userFromDB = await User.findOne({ _id: requestUser._id });
+        if (userFromDB) {
+            let validpassword = await bcrypt.compare(request.body.currentPassword, userFromDB.password);
+            if (!validpassword)
+                return response.json({ data: request.body, statusCode: 400, message: "Current Password is Invalid!" });
+            await User.findByIdAndUpdate({ _id: requestUser._id }, { $set: { password: bcrypt.hashSync(request.body.newPassword, 10) } });
+            return response.json({ data: {}, statusCode: 200, message: "Password Changed Successfully!" });
+        } else {
+            return response.json({ data: {}, statusCode: 400, message: "User Not Found!" });
+        }
+    }catch(error){
+        return response.json({ data: {}, statusCode: 500, message: error.message });
+    }
+}
 exports.getUserById = async (request, response, next) => {
     try {
         let user = await User.findOne({ _id: request.query.id }).populate('roles');
         if (user)
-            return response.json({ "data": user, "statusCode": "200", "message": "User Saved" });
+            return response.json({ data: user, statusCode: 200, message: "User Saved" });
         else
-            return response.json({ "data": {}, "statusCode": "400", "message": "not found" });
+            return response.json({ data: {}, statusCode: 400, message: "not found" });
     } catch (error) {
-        return response.json({ "data": {}, "statusCode": "500", "message": error.message });
+        return response.json({ data: {}, statusCode: 500, message: error.message });
     }
 }
 
@@ -78,8 +118,9 @@ exports.getAllUsers = async (request, response, next) => {
         const pageNumber = request.body.pageNumber || 0;
         const pageSize = request.body.pageSize || 10;
         const totalCount = await User.find().countDocuments();
-        const users = await User.find({}, { password: false, roles: false })
+        const users = await User.find({}, { password: false })
             .populate({ path: "company", select: ["name", "companyId"] })
+            .populate({ path: "roles", select: ["role_name", "roleId"] })
             .skip(pageNumber)
             .limit(pageSize);
         if (users)
@@ -101,10 +142,10 @@ exports.updateUser = async (request, response, next) => {
             keys.map((v, i) => {
                 userFromDB._doc[keys[i]] = request.body[v];
             });
-
+            userFromDB['updatedOn'] = new Date().toISOString();
             //updating user roles
             let roles = [];
-            if (request.body.roles.length !== 0) {
+            if (request.body.roles !== undefined && request.body.roles.length !== 0) {
                 let rolesFromUI = request.body.roles;
                 for (let role of rolesFromUI) {
                     let roleExisted = await Role.findOne({ role_name: role.role_name });
@@ -119,20 +160,20 @@ exports.updateUser = async (request, response, next) => {
             }
             userFromDB.roles = roles;
             const updateduser = await User.findByIdAndUpdate({ _id: request.body._id }, userFromDB, (error, doc, res) => { });
-            response.json({ "data": updateduser, "statusCode": "200", "message": "User Saved" });
+            response.json({ data: updateduser, statusCode: 200, message: "Updated Successfully" });
         }
         else
-            return response.json({ "data": {}, "statusCode": "400", "message": "not found" });
+            return response.json({ data: {}, statusCode: 400, message: "not found" });
     } catch (error) {
-        return response.json({ "data": {}, "statusCode": "500", "message": error.message });
+        return response.json({ data: {}, statusCode: 500, message: error.message });
     }
 }
 
 exports.deleteUserById = async (request, response, next) => {
     try {
-        await User.findByIdAndDelete({ _id: request.query.id });
-        response.json({ "data": {}, "statusCode": "200", "message": "User deleted" });
+        await User.findByIdAndDelete({ _id: request.query.id  }, (errror, doc, res) => response.json({ data: {}, statusCode: 200, message: "User  Deleted Successfully" }));
+        response.json({ data: {}, statusCode: "200", message: "User deleted" });
     } catch (error) {
-        response.json({ "data": "", "statusCode": "500", "message": error.message })
+        response.json({ data: "", statusCode: "500", message: error.message })
     }
 }

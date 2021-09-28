@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Button from '@material-ui/core/Button';
 
-import "./register.css";
+import "./register.scss";
 import SignupApi from '../ApiCalls/SignupApiCall';
 import UserContext from "../Context/UserContext/UserContext";
 
@@ -78,6 +78,17 @@ function Register(props) {
                         id="outlined-basic"
                         variant="outlined"
                         label="Password"
+                        type="password"
+                        name="password"
+                        {...register("password", { required: "Password is required" })}
+                    />
+                    <br />
+                    {errors.password && <span className="Error-Message">{errors.password.message}</span>}
+                    <br />
+                    <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        label="ConformPassword"
                         type="password"
                         name="password"
                         {...register("password", { required: "Password is required" })}

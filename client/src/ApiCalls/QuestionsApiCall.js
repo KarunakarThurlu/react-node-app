@@ -20,9 +20,33 @@ const QuestionsApiCall = {
             },
         });
     },
+    getSelectRangeQuestionsForExam: async (id,pageNumber,pageSize) => {
+        const token = await GetAuthToken();
+        return  axios.get(config.Base_URL + `/question/getquestionsforexam?id=${id}&${pageNumber}&${pageSize}`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    getSelectedTopicQuestionsCount: async (id) => {
+        const token = await GetAuthToken();
+        return  axios.get(config.Base_URL + `/question/totalquestionscountoftopic?id=${id}`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
     getAllQuestionsByTopicId: async (id) => {
         const token = await GetAuthToken();
         return  axios.get(config.Base_URL + `/question/getquestionsbytopicid?id=${id}`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    getQuestionsForExams: async (topicId,pageNumber,pageSize) => {
+        const token = await GetAuthToken();
+        return  axios.get(config.Base_URL + `/question/getquestionsforexam?topicId=${topicId}&pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },

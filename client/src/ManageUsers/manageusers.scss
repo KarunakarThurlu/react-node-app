@@ -35,7 +35,6 @@
       }
       .secondRow{
         display: flex;
-        margin-top: 18px;
         .MuiFormControl-root{
           margin-bottom: 20px;
         }
@@ -54,3 +53,50 @@
     
   }
 }
+
+//Profile Picture
+.MuiDialog-paper-ProfilePic{
+  text-align: center;
+  .MuiDialog-container{
+    
+    .MuiPaper-root{
+      margin: 0px;
+      padding: 1px;
+      height: 30em;
+      max-width: 80em;
+      width: 40em;
+    }
+    .MuiDialogTitle-root{
+      text-align: center;
+    }
+    .MuiDialogContent-root{
+      text-align: center;
+      .MuiAvatar-root{
+        width:18em;
+        height: 18em;
+        margin: 0px;
+        margin: auto;
+        img{
+          text-align: center;
+        }
+      }
+      .reactEasyCrop_Container{
+        margin: 8px 8px 70px 8px;
+        border-radius: 10px;
+        align-items: center;
+        align-content: center;
+        text-align: center;
+        .reactEasyCrop_Image{
+          height: 26em;
+        }
+      }
+      
+    }
+
+    .MuiDialogActions-root{
+      justify-content: center;
+    }
+  }
+}
+
+//image-cropper

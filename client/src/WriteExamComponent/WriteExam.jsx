@@ -4,14 +4,13 @@ import UserContext from "../Context/UserContext/UserContext";
 import SkipNextRoundedIcon from '@material-ui/icons/SkipNextRounded';
 import SkipPreviousRoundedIcon from '@material-ui/icons/SkipPreviousRounded';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import Typography from '@material-ui/core/Typography';
 import FormLabel from '@material-ui/core/FormLabel';
 import Button from '@material-ui/core/Button';
 import WarningPopUpModel from "../Utils/WarningPopUpModel"
@@ -19,7 +18,7 @@ import TopicApiCall from "../ApiCalls/TopicApiCall";
 import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 
 import "./writeexam.scss";
-import SelectInput from '@material-ui/core/Select/SelectInput';
+import { Typography } from '@material-ui/core';
 import MessageConstants from '../Utils/MessageConstants';
 import ExamResults from './ExamResults';
 
@@ -36,6 +35,11 @@ function WriteExam(props) {
     const [openSubmitWarningModel, setOpenSubmitWarningModel] = useState(false);
     const [openExamResultsModel, setOpenExamResultsModel] = useState(false);
     const [testScore, setTestScore] = useState(0);
+    const [questionsRange, setQuestionsRange] = useState(0);
+    const [rangedata, setRangeData] = useState([]);
+    const [loader, setLoader] = useState(false);
+    const [selectedRange, setSelectedRange] = useState('');
+    const [errors, setErrors] = useState({ topic: '', questionsrange: '' });
 
     useEffect(() => {
         TopicApiCall.getAllTopics()
@@ -43,18 +47,33 @@ function WriteExam(props) {
             .catch(error => console.log(error));
     }, []);
 
+    const getSelectedTopicQuestionsCount = (id) => {
+        setLoader(true);
+        QuestionsApiCall.getSelectedTopicQuestionsCount(id)
+            .then(response => {
+                if (response.data.statusCode === 200) {
+                    setQuestionsRange(response.data.data);
+                    getRangeList(response.data.data);
+                    setLoader(false);
+                }
+            })
+            .catch(error => console.log(error))
+            .finally(() => setLoader(false));
+    }
 
+    const handleTopicSelect = (event) => {
+        getSelectedTopicQuestionsCount(event.target.value);
+        setTopicName(event.target.value);
+        if (event.target.value !== '') {
+            setErrors({ ...errors, topic: '' });
+        }
+    }
 
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    };
-
-    let handleClick = () => {
-        if (topicName === '' || topicName === 'Please Select Topic') {
-            let error = topicName === 'Please Select Topic' ? topicName : '';
-            setTopicName(error)
-        } else {
-            QuestionsApiCall.getAllQuestionsByTopicId(topicName)
+    let handleStartExam = () => {
+        if (validateForm()) {
+            const range = selectedRange.split('-');
+            const start = parseInt(range[0]);
+            QuestionsApiCall.getQuestionsForExams(topicName, start-1, 20)
                 .then(response => {
                     let array = [];
                     if (response.data.statusCode === 200) {
@@ -89,6 +108,21 @@ function WriteExam(props) {
             let fooo = setInterval(down, 1000);
         }
     }
+
+    const validateForm = () => {
+        let isValid = true;
+        let errorsobj = {topic:'',questionsrange:''};
+        if (topicName === '') {
+            errorsobj["topic"] = "Please Select Topic";
+            isValid = false;
+        }
+        if (selectedRange === '') {
+            errorsobj["questionsrange"] = "Please Select Questions Range";
+            isValid = false;
+        }
+        setErrors(errorsobj);
+        return isValid;
+    }
     const saveAnswer = (e) => {
         const updateAnswer = questions.find(Q => Q.id === questionInfo.id)
         if (updateAnswer) {
@@ -117,30 +151,54 @@ function WriteExam(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        QuestionsApiCall.getTestResults(questions,0,topicName)
-        .then(response => {
-            if (response.data.statusCode === 200) {
-                setTestScore(response.data.testScore);
-                setOpenExamResultsModel(true);
-                setStartExam(false);
-                setTopicName('')
-                setOpenSubmitWarningModel(false)
+        const range = selectedRange.split('-');
+        const pageNumber = parseInt(range[0]);
+        QuestionsApiCall.getTestResults(questions, pageNumber-1, topicName)
+            .then(response => {
+                if (response.data.statusCode === 200) {
+                    setTestScore(response.data.testScore);
+                    setOpenExamResultsModel(true);
+                    setStartExam(false);
+                    setTopicName('')
+                    setOpenSubmitWarningModel(false)
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+    const getRangeList = (size) => {
+        let array = [];
+        if (size <= 20) {
+            array.push(1 + " - " + size);
+        } else {
+            let reminder = size % 20;
+            let count = size / 20;
+            let start = 1;
+            let end = 20;
+            for (let i = 1; i <= count; i++) {
+                array.push(start + "-" + end);
+                start = end + 1;
+                end = end + 20;
             }
-        })
-        .catch(error => {
-            console.log(error);
-        })
+            if (reminder !== 0) {
+                array.push(start + "-" + size);
+            }
+        }
+        setRangeData(array);
+        return array;
     }
     return (
         <div className="write-exam-container">
             <Home />
             <WarningPopUpModel open={openSubmitWarningModel} message={MessageConstants.Submit_Exam_Warning} onClickYes={handleSubmit} handleClose={() => setOpenSubmitWarningModel(false)} />
-            <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)}  testScore={testScore}/>
+            <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)} testScore={testScore} />
+            {loader && <CircularProgress className="loader" />}
             {startExam === true ? <Grid container >
                 <Grid item xs={8} sm={8}>
                     <FormControl >
                         <FormLabel >{questionInfo.id}.{questionInfo.name}</FormLabel>
-                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
+                        <RadioGroup value={value} onChange={event => setValue(event.target.value)}>
                             <FormControlLabel value="A" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "A" ? true : false} />} label={questionInfo.optionA} />
                             <FormControlLabel value="B" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "B" ? true : false} />} label={questionInfo.optionB} />
                             <FormControlLabel value="C" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "C" ? true : false} />} label={questionInfo.optionC} />
@@ -170,27 +228,47 @@ function WriteExam(props) {
                 <Grid container spacing={1} className="start-exam">
                     <Grid item xs={8} sm={8}>
                         <Typography color='primary' variant='h6' component='h6' align='center' >
-                            The Exam Contains 20 Questions and Time also 20 minutes means each
-                            Question has exactly one minute. Before starting the exam you need to select topic
+                            Exam Contains 20 Questions and Time also 20 minutes. Each
+                            Question has exactly one minute. Before starting the exam you need to select Topic & Questions Range
                             then you can click on start.
                         </Typography>
-                        <br /><br /><br />
+                        <br /><br />
                         <FormControl variant="outlined" >
-                            <InputLabel >Select Topic</InputLabel>
+                            <InputLabel >Topic</InputLabel>
                             <Select
                                 native
-                                label="Select Topic"
+                                label="Topic"
                                 name="Topic"
-                                onClick={(e) => setTopicName(e.target.value)}
+                                onClick={handleTopicSelect}
+                                error={errors.topic !== "" ? true : false}
+                                helperText={errors.topic}
                             >
                                 <option aria-label="None" value="" />
                                 {topics.map(t => (<option value={t._id}>{t.topicName}</option>))}
                             </Select>
                         </FormControl>
-
-                        <br /><br /><br />
-                        <Button variant="contained" color='primary' onClick={handleClick}>Start</Button>
-
+                        <br /><br />
+                        <FormControl variant="outlined" >
+                            <InputLabel >Questions Range</InputLabel>
+                            <Select
+                                native
+                                label="Questions Range"
+                                name="questionsrange"
+                                onClick={(e) => {
+                                    setSelectedRange(e.target.value);
+                                    if (e.target.value !== '') {
+                                        setErrors({ ...errors, questionsrange: '' });
+                                    }
+                                }}
+                                error={errors.questionsrange !== "" ? true : false}
+                                helperText={errors.questionsrange}
+                            >
+                                <option aria-label="None" value="" />
+                                {rangedata.map((v, i) => (<option key={i} value={v}>{v}</option>))}
+                            </Select>
+                        </FormControl>
+                        <br /><br /> <br />
+                        <Button variant="contained" color='primary' onClick={handleStartExam}>Start</Button>
                     </Grid>
                 </Grid>
 

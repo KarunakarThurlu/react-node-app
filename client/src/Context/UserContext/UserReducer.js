@@ -8,16 +8,38 @@ const userReducer = (state, action) => {
                 users: [...state.users, action.payload]
             }
         case UserActions.UPDATE_USER:
-            return {}
+            let updatedList= state.users.map((item) =>item._id===action.payload._id?action.payload:item)
+            return {
+                ...state,
+                users: updatedList
+            }
         case UserActions.DELETE_USER:
-            return {}
+            return {
+                ...state,
+                users: state.users.filter(user => user._id !== action.payload)
+            }
         case UserActions.GET_USER: {
-            return {}
+            return {
+                ...state,
+                users: state.users.filter(user => user._id === action.payload)
+            }
         }
         case UserActions.GET_ALL_USERS: {
             return {
                 ...state,
                 users: action.payload || []
+            }
+        }
+        case UserActions.ADD_LOGIN_USER_DATA: {
+            return {
+                ...state,
+                loggedInUser: action.payload 
+            }
+        }
+        case UserActions.GET_LOGIN_USER_DATA: {
+            return {
+                ...state,
+                loggedInUser:state.loggedInUser
             }
         }
         default:

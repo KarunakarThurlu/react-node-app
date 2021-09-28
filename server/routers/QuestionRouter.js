@@ -11,4 +11,7 @@ router.get("/getallquestions", questionController.getAllQuestions);
 router.get("/getquestionsbytopicid", questionController.getAllQuestionsByTopicId);
 router.delete("/deletequestion", JWTConfig.verify, [JWTConfig.Admin], questionController.deleteQuestionById);
 router.post("/gettestscore", questionController.getTestScore);
+router.get("/totalquestionscountoftopic", questionController.totalQuestionsCountOfTopic);
+router.get("/getquestionsforexam", questionController.getQuestionsForExam);
+
 module.exports = router

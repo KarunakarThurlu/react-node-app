@@ -5,11 +5,10 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import moment from "moment";
+import HelperUtils from '../Utils/HelperUtils';
 import Home from '../HomeComponent/Home';
 import SubmitQuestionModel from "./SubmitQuestionModel";
 import ChangeQuestionStatusModel from "./ChangeQuestionStatusModel";
-import FilterListTwoToneIcon from '@material-ui/icons/FilterListTwoTone';
 import MaterialTable from 'material-table';
 import Tooltip from '@material-ui/core/Tooltip';
 import WarningPopupModel from "../Utils/WarningPopUpModel"
@@ -106,8 +105,8 @@ function SubmitQuestion(props) {
         questions.map((q, i) => {
             q.creator_name = q.creator.name;
             q.topic_name = q.topic.topicName;
-            q.createdOn = moment(q.createdOn).format("YYYY-MM-DD");
-            q.updatedOn = moment(q.updatedOn).format("YYYY-MM-DD");
+            q.createdOn = HelperUtils.formateDate(q.createdOn);
+            q.updatedOn = HelperUtils.formateDate(q.updatedOn);
         });
     }
     const updateQuestioninList = (data) => {
@@ -121,7 +120,7 @@ function SubmitQuestion(props) {
         <div className="questions-container">
             <Home />
             <ChangeQuestionStatusModel updateQuestion={updateQuestioninList} open={statusModelOpen} CQData={currentQuestion} onClose={() => setStatusModelOpen(false)} />
-            <SubmitQuestionModel open={open} editFormData={formDataToEdit} CQData={currentQuestion} onClose={() => setOpen(false)} />
+            <SubmitQuestionModel open={open} editFormData={formDataToEdit}  onClose={() => setOpen(false)} />
             <WarningPopupModel open={showWarningPopup} message={MessageConstants.Delete_Question_Warning} onClickYes={handleDeleteQuestion} handleClose={() => setShowWarningPopup(false)} />
             <div className="Questions-Table">
                 <MaterialTable
@@ -129,17 +128,13 @@ function SubmitQuestion(props) {
                     data={rows}
                     headerHeight={10}
                     columns={columns}
-                    count={123}
                     page={1}
                     pageSize={10}
+                    totalCount={108}
 
                     actions={[{
                         icon: () => <AddIcon onClick={() => {setOpen(true);setFormDataToEdit(null)}} />,
                         tooltip: "Add Question",
-                        isFreeAction: true
-                    }, {
-                        icon: () => <FilterListTwoToneIcon variant="contained" color="primary" onClick={() => setOpen(true)} />,
-                        tooltip: "Filter Questions By topic",
                         isFreeAction: true
                     },
                     rowData => ({
@@ -161,12 +156,14 @@ function SubmitQuestion(props) {
                     ]}
                     options={{
                         exportButton: true,
-                        maxBodyHeight: '410px',
+                        grouping: true,
+                        sorting: true,
+                        maxBodyHeight: '350px',
                         headerStyle: { backgroundColor: '#01579b', color: '#FFF', height: "1em", whiteSpace: 'nowrap' },
                         rowStyle: { whiteSpace: 'nowrap', },
                         actionsColumnIndex: -1,
                         fixedColumns: { left: 0, right: 0 },
-
+                        pageSizeOptions: [5,10, 25, 50, 100]
                     }}
                 />
             </div>

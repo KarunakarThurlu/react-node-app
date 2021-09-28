@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { AppBar, Toolbar, IconButton, Button, Typography } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu"
 import PersonIcon from '@material-ui/icons/Person';
-import LogOutIcon from '@material-ui/icons/PowerSettingsNew';
+import   LogOutIcon  from '@material-ui/icons/PowerSettingsNewOutlined';
 import SettingsIcon from '@material-ui/icons/Settings';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AccountCircleSharpIcon from '@material-ui/icons/AccountCircleSharp';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import config from "../ApiCalls/Config";
 import { withRouter } from "react-router-dom";
 import Notifier from '../Utils/Notifier';
+import UploadProfilePic from '../ManageUsers/UploadProfilePic';
 import Sidebar from './Sidebar';
+import ChangePassword from './ChangePassword';
+import AddUserModel from '../ManageUsers/AddUserModel';
+import UserContext from "../Context/UserContext/UserContext";
 
 import './sidebar.scss';
 
@@ -20,19 +25,32 @@ function NavBar(props) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [showProfilePic, setShowProfilePic] = useState(false);
+    const [showChangePassword, setShowChangePassword] = useState(false);
+    const [showAccountDetails, setShowAccountDetails] = useState(false);
+    const [loggedInUserData, setLoggedInUserData] = useState({});
 
+    useEffect(() => {
+        GetloginuserDetails();
+    }, []);
+
+    const GetloginuserDetails = async () => {
+        let user = "";
+        await config.LOCAL_FORAGE.getItem("user")
+            .then((value) => {
+                user = value;
+                setLoggedInUserData(user);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        return user;
+    }
 
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const logout = () => {
-        config.LOCAL_FORAGE.removeItem("token");
-        localStorage.clear();
-        props.history.push("/signin");
-        Notifier.notify("You are Logged out  Successfully!.", Notifier.notificationType.SUCCESS);
-        //window.location.href = "/signin"
-    }
+   
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     }
@@ -41,8 +59,30 @@ function NavBar(props) {
         setSidebarOpen(true)
         setIsAdmin(localStorage.getItem("isAdmin"));
     }
+
+    const dropDropDownItemClick = (event) => {
+        if (event.currentTarget.innerText === "Profile") {
+            GetloginuserDetails();
+            setShowProfilePic(true);
+        } else if (event.currentTarget.innerText=== "Account") {
+            GetloginuserDetails();
+            setIsAdmin(localStorage.getItem("isAdmin")===null?false:localStorage.getItem("isAdmin"));
+            setShowAccountDetails(true);
+        }  else if (event.currentTarget.innerText=== "Password") {
+            setShowChangePassword(true);
+        } else {
+            config.LOCAL_FORAGE.removeItem("token");
+            config.LOCAL_FORAGE.removeItem("user");
+            localStorage.clear();
+            props.history.push("/signin");
+            Notifier.notify("You are Logged out  Successfully!.", Notifier.notificationType.SUCCESS);
+        }
+    }
     return (
         <div className="home-container">
+            <AddUserModel open={showAccountDetails} onClose={()=>setShowAccountDetails(false)} isAdmin={isAdmin} editFormData={loggedInUserData}/>
+            <UploadProfilePic open={showProfilePic} onClose={() => setShowProfilePic(false)}  image={loggedInUserData!==null?loggedInUserData.profilePicture:""}/>
+            <ChangePassword open={showChangePassword} onClose={() => setShowChangePassword(false)}/>
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
@@ -51,22 +91,36 @@ function NavBar(props) {
                 onClose={handleClose}
             >
                 <MenuItem onClick={handleClose}>
-                    <PersonIcon style={{paddingRight:"4px"}} />
-                    <Typography >
-                        Profile
-                    </Typography>
+                    <div onClick={dropDropDownItemClick} name="Profile" style={{ display: "flex" }}>
+                        <PersonIcon />
+                        <Typography >
+                            Profile
+                        </Typography>
+                    </div>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
-                    <SettingsIcon  style={{paddingRight:"4px"}}  />
-                    <Typography >
-                        Account
-                    </Typography>
+                    <div onClick={dropDropDownItemClick} name="Account" style={{ display: "flex" }}>
+                        <SettingsIcon style={{ paddingRight: "4px" }} />
+                        <Typography >
+                            Account
+                        </Typography>
+                    </div>
                 </MenuItem>
-                <MenuItem onClick={logout}>
-                    <LogOutIcon  style={{paddingRight:"4px"}}  />
-                    <Typography >
-                        Logout
-                    </Typography>
+                <MenuItem  onClick={handleClose}>
+                    <div onClick={dropDropDownItemClick}  name="Password" style={{ display: "flex" }}>
+                        <VpnKeyIcon style={{ paddingRight: "4px" }} />
+                        <Typography >
+                         Password
+                        </Typography>
+                    </div>
+                </MenuItem>
+                <MenuItem onClick={dropDropDownItemClick}>
+                    <div  name="logout" style={{ display: "flex" }}>
+                        <LogOutIcon style={{ paddingRight: "4px" }} />
+                        <Typography >
+                            Logout
+                        </Typography>
+                    </div>
                 </MenuItem>
             </Menu>
             <AppBar title="Java Quiz Application" variant="elevation" className="nav-bar">
@@ -77,7 +131,7 @@ function NavBar(props) {
                     <Typography variant="h6" >
                         Java Quiz Appliocation
                     </Typography>
-                    <AccountCircleSharpIcon onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />
+                    {loggedInUserData!==null && loggedInUserData.profilePicture!==undefined && loggedInUserData.profilePicture!==null?<img onClick={handleClick}  src={loggedInUserData.profilePicture}  alt="" style={{width: 40, borderRadius: '50%'}}/>: <AccountCircleSharpIcon onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />}
                 </Toolbar>
             </AppBar>
             <Sidebar open={sidebarOpen} isAdmin={isAdmin} onHide={() => setSidebarOpen(false)} />

@@ -12,12 +12,32 @@ import TableRow from '@material-ui/core/TableRow';
 import ExamsApiCall from '../ApiCalls/ExamsApiCall';
 import HelperUtils from "../Utils/HelperUtils";
 import Home from '../HomeComponent/Home';
+import DeletePopUpModel from '../Utils/WarningPopUpModel';
+import MessageConstants from '../Utils/MessageConstants';
+import Notifier from '../Utils/Notifier';
 
 const ExamsTable = () => {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [exams, setExams] = useState([]);
+    const [openDeleteModel, setOpenDeleteModel] = useState(false);
+    const [examId, setExamId] = useState(0);
+
+    const handleConformDelete =()=>{
+        ExamsApiCall.deleteExam(examId)
+            .then(res => {
+                if (res.data.statusCode === 200) {
+                    setOpenDeleteModel(false);
+                    setExams(exams.filter(exam => exam._id !== examId));
+                    Notifier.notify(res.data.message,Notifier.notificationType.SUCCESS);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+     }
+    
 
 
     useEffect(() => {
@@ -46,6 +66,7 @@ const ExamsTable = () => {
     return (
         <div>
             <Home />
+            <DeletePopUpModel  open={openDeleteModel} onClickYes={handleConformDelete} message={MessageConstants.Delete_Exam_Warning} handleClose={() => setOpenDeleteModel(false)}/>
             <TableContainer className="table-container">
                 <div className="heading">
                     <div className="label">
@@ -78,7 +99,7 @@ const ExamsTable = () => {
                                 <TableCell >{row.TopicName}</TableCell>
                                 <TableCell >{HelperUtils.formateDate(row.Date)}</TableCell>
                                 <TableCell >{row.TestScore}</TableCell>
-                                <TableCell ><Button variant="contained"  ><DeleteIcon color="error" /></Button></TableCell>
+                                <TableCell ><Button variant="contained" onClick={()=>{setOpenDeleteModel(true); setExamId(row._id)}} ><DeleteIcon color="error" /></Button></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

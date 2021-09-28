@@ -20,9 +20,20 @@ const UsersApiCalls = {
             },
         });
     },
+    saveUser: async (data) => {
+        return  axios.post(config.Base_URL + "/user/saveuser", data);
+    },
     updateUser: async (data) => {
         const token = await GetAuthToken();
-        return  axios.post(config.Base_URL + "/user/updateuser", data, {
+        return  axios.put(config.Base_URL + "/user/updateuser", data, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    changePassword: async (data) => {
+        const token = await GetAuthToken();
+        return  axios.put(config.Base_URL + "/user/changepassword", data, {
             headers: {
                 Authorization: `Bearer ` + token,
             },
@@ -30,7 +41,18 @@ const UsersApiCalls = {
     },
     deleteUser: async (UserId) => {
         const token = await GetAuthToken();
-        return  axios.post(config.Base_URL + `/user/deleteuser?id=${UserId}`, {
+        return  axios.delete(config.Base_URL + `/user/deleteuser?id=${UserId}`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    uploadProfilePic: async (file) => {
+        const token = await GetAuthToken();
+        var data = new FormData();
+        data.append("image", file);
+        console.log(data);
+        return  axios.post(config.Base_URL + `/user/uploadprofilepic`,data, {
             headers: {
                 Authorization: `Bearer ` + token,
             },

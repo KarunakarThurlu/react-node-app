@@ -16,13 +16,14 @@ export default function DeletePopUpModel(props) {
         onClose={props.handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle id="alert-dialog-title" style={{textAlign:'center'}}>
           <Typography color="secondary" variant='h5'>
              Are You Sure?
           </Typography>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{width: '500px',height:'100px',padding:'20px'}}>
           <DialogContentText id="alert-dialog-description">
             <Typography color='primary' variant='h6' component='h6' align='center' >
               {props.message}

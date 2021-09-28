@@ -1,21 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState ,useContext} from 'react'
 import TextField from '@material-ui/core/TextField';
-import { Link } from "react-router-dom"
+import { Link ,withRouter} from "react-router-dom"
 import { useForm } from 'react-hook-form';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { withRouter } from "react-router-dom";
-
 import config from "../ApiCalls/Config";
 import LoginApiCall from "../ApiCalls/LoginApiCall";
 import Notifier from "../Utils/Notifier";
+import UserContext from '../Context/UserContext/UserContext';
 
 import "./login.css";
 
 function Login(props) {
     const { register, handleSubmit, formState: { errors }, } = useForm();
     const [loader, setLoader] = useState(false);
+    const { addLoggedInUserData} = useContext(UserContext);
 
     const onSubmit = (data) => {
         setLoader(true);
@@ -23,11 +23,13 @@ function Login(props) {
             setLoader(false);
             if (response.data.statusCode === 200) {
                 localStorage.setItem("isAuthenticated", true);
+                addLoggedInUserData(response.data.data);
                 if(response.data.data.roles.some(role => role.role_name === "ADMIN"))
                     localStorage.setItem("isAdmin", true);
                 props.history.push("/home")
                 Notifier.notify(response.data.message, Notifier.notificationType.SUCCESS);
                 config.LOCAL_FORAGE.setItem("token", response.data.token);
+                config.LOCAL_FORAGE.setItem("user", response.data.data);
             } else {
                 Notifier.notify(response.data.message, Notifier.notificationType.ERROR);
             }

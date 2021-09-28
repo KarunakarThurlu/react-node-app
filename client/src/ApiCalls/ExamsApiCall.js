@@ -10,6 +10,14 @@ const ExamsApi = {
                 Authorization: `Bearer ` + token,
             },
         });
+    },
+    deleteExam: async (id) => {
+        const token = await GetAuthToken();
+        return axios.delete(config.Base_URL + `/exams/deleteexam?id=${id}`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
     }
 }
 

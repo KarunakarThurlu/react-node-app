@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.MuiCircularProgress-colorPrimary {
+  color: rgb(46, 7, 221) !important;
+}
+
+.MuiCircularProgress-root { 
+  left: 43%; 
+  position: absolute; 
+  top: 44vh; 
+}

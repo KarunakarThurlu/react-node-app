@@ -52,7 +52,7 @@ app.use("/question", questionRouter);
 app.use("/exams", examsRouter);
 
 
-
+app.use('/uploads', express.static('uploads'));
 
 //Error Handling
 app.use((request, response) => {

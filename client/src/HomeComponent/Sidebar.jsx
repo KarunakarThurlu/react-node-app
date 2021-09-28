@@ -13,9 +13,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import LayersIcon from '@material-ui/icons/Layers';
 import Typography from '@material-ui/core/Typography';
-
-
-
+import Avatar from '@material-ui/core/Avatar';
 
 function Sidebar(props) {
 
@@ -24,9 +22,9 @@ function Sidebar(props) {
             <Drawer variant="persistent"
                 anchor="left" openSecondary={true} open={props.open} >
                 <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", height: "4.0em", backgroundColor: "hsl(231deg 48% 48%)" }}>
-                    <h1>Logo</h1>
+                    <img src="/java-horizontal.svg" alt="" style={{height: "45px"}} />
                     <IconButton onClick={props.onHide} >
-                        <CloseIcon style={{ color: "white", fontSize: "2.5rem" }} />
+                        <CloseIcon style={{ color: "InactiveBorder", fontSize: "2.0rem" }} />
                     </IconButton>
                 </div>
                 <Divider />
