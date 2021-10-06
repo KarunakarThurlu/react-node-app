@@ -14,7 +14,7 @@ const AddQuestion = () => {
     const [topics, setTopics] = useState([]);
     const { saveQuestion } = useContext(QuestionsContext);
     useEffect(() => {
-        TopicApiCall.getAllTopics()
+        TopicApiCall.getAllTopicsWithoutpagination()
             .then(response => setTopics(response.data.data))
             .catch(error => console.log(error));
     }, []);

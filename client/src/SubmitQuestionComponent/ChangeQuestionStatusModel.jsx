@@ -14,29 +14,15 @@ import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 import "./AddQuestions.scss"
 
 function ChangeQuestionStatusModel(props) {
-    const [updatedQuestion, setUpdatedQuestion] = useState();
+
     const handleClick = (value) => {
-        QuestionsApiCall.updateQuestion({ _id: props.CQData._id, status: value })
-            .then(response => {
-                if (response.data.statusCode === 200) {
-                    Notifier.notify(response.data.message, Notifier.notificationType.SUCCESS);
-                    setUpdatedQuestion(response.data.data);
-                    props.updateQuestion(response.data.data);
-                    props.onClose();
-                } else {
-                    Notifier.notify(response.data.message, Notifier.notificationType.WARNING);
-                    props.onClose();
-                }
-            })
-            .catch(error => {
-                Notifier.notify("Something went wrong!", Notifier.notificationType.Error);
-            })
+        props.updateQuestion({ _id: props.CQData._id, status: value });
     }
     return (
         <div>
             <Dialog onClose={props.onClose} open={props.open} className="MuiDialog-paper-ChangeQuestionStatusModel">
                 <MuiDialogTitle>
-                    <IconButton  className="closeButton" onClick={props.onClose}><CloseIcon /></IconButton>
+                    <IconButton className="closeButton" onClick={props.onClose}><CloseIcon /></IconButton>
                 </MuiDialogTitle>
                 <MuiDialogContent>
                     <Typography color='initial' variant='h6' component='h6' align='left' >

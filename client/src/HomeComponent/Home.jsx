@@ -28,25 +28,16 @@ function NavBar(props) {
     const [showProfilePic, setShowProfilePic] = useState(false);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [showAccountDetails, setShowAccountDetails] = useState(false);
-    const [loggedInUserData, setLoggedInUserData] = useState({});
+    const [loggedInUserData, setLoggedInUserData] = useState(null);
+    const {addLoggedInUserData,loggedInUser,getLoggedInUserData}=useContext(UserContext);
 
     useEffect(() => {
-        GetloginuserDetails();
-    }, []);
+        config.LOCAL_FORAGE.getItem("user").then((res) => {
+            setLoggedInUserData(res);
+          });
+    }, [loggedInUser]);
 
-    const GetloginuserDetails = async () => {
-        let user = "";
-        await config.LOCAL_FORAGE.getItem("user")
-            .then((value) => {
-                user = value;
-                setLoggedInUserData(user);
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        return user;
-    }
-
+    
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -62,10 +53,8 @@ function NavBar(props) {
 
     const dropDropDownItemClick = (event) => {
         if (event.currentTarget.innerText === "Profile") {
-            GetloginuserDetails();
             setShowProfilePic(true);
         } else if (event.currentTarget.innerText=== "Account") {
-            GetloginuserDetails();
             setIsAdmin(localStorage.getItem("isAdmin")===null?false:localStorage.getItem("isAdmin"));
             setShowAccountDetails(true);
         }  else if (event.currentTarget.innerText=== "Password") {
@@ -81,7 +70,7 @@ function NavBar(props) {
     return (
         <div className="home-container">
             <AddUserModel open={showAccountDetails} onClose={()=>setShowAccountDetails(false)} isAdmin={isAdmin} editFormData={loggedInUserData}/>
-            <UploadProfilePic open={showProfilePic} onClose={() => setShowProfilePic(false)}  image={loggedInUserData!==null?loggedInUserData.profilePicture:""}/>
+            <UploadProfilePic open={showProfilePic} onClose={() => setShowProfilePic(false)}  image={loggedInUserData!==null?loggedInUserData.profilePicture:""} />
             <ChangePassword open={showChangePassword} onClose={() => setShowChangePassword(false)}/>
             <Menu
                 id="simple-menu"
@@ -129,9 +118,9 @@ function NavBar(props) {
                         <MenuIcon style={{ color: "white", fontSize: "2.5rem" }} />
                     </IconButton>
                     <Typography variant="h6" >
-                        Java Quiz Appliocation
+                        Java Quiz Application
                     </Typography>
-                    {loggedInUserData!==null && loggedInUserData.profilePicture!==undefined && loggedInUserData.profilePicture!==null?<img onClick={handleClick}  src={loggedInUserData.profilePicture}  alt="" style={{width: 40, borderRadius: '50%'}}/>: <AccountCircleSharpIcon onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />}
+                    {loggedInUserData!==null &&  loggedInUserData.profilePicture!==null?<img onClick={handleClick}  src={loggedInUserData.profilePicture}  alt="" style={{width: 40, borderRadius: '50%'}}/>: <AccountCircleSharpIcon onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />}
                 </Toolbar>
             </AppBar>
             <Sidebar open={sidebarOpen} isAdmin={isAdmin} onHide={() => setSidebarOpen(false)} />

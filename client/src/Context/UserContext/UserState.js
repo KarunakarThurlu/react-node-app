@@ -4,12 +4,14 @@ import UserReducer from './UserReducer';
 import UserApiCall from "../../ApiCalls/UsersApiCall";
 import Notifier from '../../Utils/Notifier';
 import UserActions from "./UserActions";
+import config from '../../ApiCalls/Config';
 
 
 const UserState = (props) => {
     const initialState = {
         users: [],
-        loggedInUser: {}
+        loggedInUser: {},
+        totalCount:0
     }
     const [state, dispatch] = useReducer(UserReducer, initialState);
 
@@ -53,12 +55,12 @@ const UserState = (props) => {
             });
     }
 
-    const getAllUsers = async () => {
-        await UserApiCall.getAllUsers()
+    const getAllUsers = async (pageNumber,pageSize) => {
+        await UserApiCall.getAllUsers(pageNumber,pageSize)
             .then(response => {
                 dispatch({
                     type: UserActions.GET_ALL_USERS,
-                    payload: response.data.data
+                    payload: response.data
                 })
             })
             .catch(error => {
@@ -89,6 +91,8 @@ const UserState = (props) => {
             .then(response => {
                 if (response.data.statusCode === 200) {
                     Notifier.notify(response.data.message, Notifier.notificationType.SUCCESS);
+                    config.LOCAL_FORAGE.removeItem('user');
+                    config.LOCAL_FORAGE.setItem('user', response.data.data);
                     dispatch({
                         type: UserActions.UPDATE_USER,
                         payload: response.data.data
@@ -118,8 +122,7 @@ const UserState = (props) => {
 
     return (
         <UserContext.Provider value={{
-            users: state.users,
-            loggedInUser: state.loggedInUser,
+            users:state,
             saveUser,
             deleteUser,
             updateUser,

@@ -10,6 +10,7 @@ import Notifier from '../../Utils/Notifier';
 const QuestionsState = (props) => {
     const initialState = {
         questions: [],
+        totalCount: 0
     }
     const [state, dispatch] = useReducer(QuestionReducer, initialState);
 
@@ -64,12 +65,12 @@ const QuestionsState = (props) => {
             });
     }
 
-    const getAllQuestions = async () => {
-        await QuestionApiCall.getAllQuestions()
+    const getAllQuestions = async (pageNumber,pageSize) => {
+        await QuestionApiCall.getAllQuestions(pageNumber,pageSize)
             .then(response => {
                 dispatch({
                     type: QuestionActions.GET_ALL_QUESTIONS,
-                    payload: response.data.data
+                    payload: response.data
                 })
             })
             .catch(error => {
@@ -97,7 +98,7 @@ const QuestionsState = (props) => {
 
     return (
         <QuestionsContext.Provider value={{
-            questions: state.questions,
+            questions: state,
             saveQuestion,
             getQuestion,
             deleteQuestion,

@@ -3,9 +3,9 @@ import axios from "axios";
 import GetAuthToken from "../Utils/GetAuthToken";
 
 const ExamsApi = {
-    getAllExamsDetails: async (data) => {
+    getAllExamsDetails: async (pageNumber,pageSize) => {
         const token = await GetAuthToken();
-        return  axios.get(config.Base_URL + "/exams/getallexamsDetails", data, {
+        return  axios.get(config.Base_URL + `/exams/getallexamsDetails?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },

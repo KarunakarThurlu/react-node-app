@@ -253,6 +253,7 @@ function AddUserModel(props) {
                         helperText={errors.DOB}
                         fullWidth
                         required
+                        
                     />
 
                     <div className="secondRow">

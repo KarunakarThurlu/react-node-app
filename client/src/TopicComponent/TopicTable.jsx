@@ -1,63 +1,96 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Table from '@material-ui/core/Table';
-import Button from '@material-ui/core/Button';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/AddCircleRounded';
-import DeleteIcon from '@material-ui/icons/Delete';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
 import Home from "../HomeComponent/Home";
 import TopicContext from '../Context/TopicContext/TopicContext';
 import DeletePopUpModel from '../Utils/WarningPopUpModel';
 import HelperUtils from '../Utils/HelperUtils';
 import TopicModel from './TopicModel';
+import WarningPopupModel from "../Utils/WarningPopUpModel"
 import MessageConstants from '../Utils/MessageConstants';
+import DataTable from "../Utils/DataTable";
 import "./topic.scss";
 
 const TopicTable = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDeleteModel, setOpenDeleteModel] = useState(false);
-  const [openEditModel, setOpenEditModel] = useState(false);
-  const [editTopicData, setEditTopicData] = useState({});
+  const [showWarningPopup, setShowWarningPopup] = useState(false);
+  const [editTopicData, setEditTopicData] = useState(null);
   const [deleteTopicId, setDeleteTopicId] = useState(0);
-  const { Topics, getAllTopics,deleteTopic } = useContext(TopicContext);
+  const { Topics, getAllTopics, deleteTopic } = useContext(TopicContext);
 
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(page);
+    getAllTopics(newPage, rowsPerPage);
   };
 
   useEffect(() => {
-    getAllTopics();
+    getAllTopics(page, rowsPerPage);
   }, []);
 
-  let rows = Topics;
+  const getDataOnPageChange = (pageSize) => {
+    setPage(1);
+    getAllTopics(1, pageSize);
+  }
 
-  console.log(Topics);
-  
+  let rows = Topics.Topics;
+  if (rows !== undefined && rows.length !== 0) {
+    rows.map((q, i) => {
+        q.name = q.creator.name;
+        q.createdOn = HelperUtils.formateDate(q.createdOn);
+        q.updatedOn = HelperUtils.formateDate(q.updatedOn);
+    });
+}
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
     console.log(page, rowsPerPage);
   };
 
-  const handleConformDelete =()=>{
-     deleteTopic(deleteTopicId);
-     setOpenDeleteModel(false)
+  const columns =
+    [
+      { field: '_id', title: 'Id' },
+      { field: 'topicName', title: 'TopicName', },
+      { field: 'description', title: 'description', },
+      { field: 'name', title: 'Name', },
+      { field: 'createdOn', title: 'CreatedOn', },
+      { field: 'updatedOn', title: 'UpdatedOn', },
+      
+    ]
+
+  const handleConformDelete = () => {
+    deleteTopic(deleteTopicId);
+    setShowWarningPopup(false);
   }
- 
+  const TableData = { columns, rows, page, rowsPerPage, totalCount: Topics.totalCount, toolTip: "Add Topic", title: "Topics Data " ,showActions:true}
   return (
-    <div>
+    <div className="topic-table">
       <Home />
       <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={MessageConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
-      <TopicModel open={openEditModel}  data={editTopicData} handleClose={() => setOpenEditModel(false)} />
-      <TableContainer className="table-container">
+      <TopicModel open={open} data={editTopicData} onClose={() => setOpen(false)} />
+      <WarningPopupModel open={showWarningPopup} message={MessageConstants.Delete_Topic_Warning} onClickYes={handleConformDelete} handleClose={() => setShowWarningPopup(false)} />
+      <div className="Data-Table">
+        <DataTable
+          data={TableData}
+          handleChangePage={handleChangePage}
+          setFormDataToEdit={setEditTopicData}
+          setOpen={setOpen}
+          setIdForDelete={setDeleteTopicId}
+          setShowWarningPopup={setShowWarningPopup}
+          setRowsPerPage={setRowsPerPage}
+          setPage={setPage}
+          getDataOnPageChange={getDataOnPageChange}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default TopicTable;
+
+/*
+<TableContainer className="table-container">
         <div className="heading">
           <div className="label">
             <label htmlFor=""> Topics Table</label>
@@ -103,9 +136,4 @@ const TopicTable = () => {
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </div>
-  );
-}
-
-export default TopicTable;
+      />*/

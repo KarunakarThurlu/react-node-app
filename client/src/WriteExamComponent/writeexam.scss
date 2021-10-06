@@ -69,7 +69,6 @@
 }
 
 //Exam Results Model
-
   .MuiDialog-paper-examresultsModel{
     .MuiDialog-paperScrollPaper {
       flex-direction: column;
@@ -78,4 +77,51 @@
       text-align: center;
       
     }
+  }
+  //Exam Details Table Styles
+  .Exams-Table{
+    overflow-y: inherit;
+    margin-top: 4.5em;
+    text-align: center;
+    text-align: center;
+  }
+
+  //Review Exam Model
+  .MuiDialog-paper-ReviewExamModel{
+    .MuiDialog-container {
+      .MuiDialog-paperWidthSm {
+        max-width: 100em;
+        width: 100em;
+        .MuiDialogTitle-root {
+         padding: 10px;
+          .MuiTypography-h5 {
+            text-align: center;
+          }
+          .MuiTypography-h6 {
+            text-align: right;
+          }
+        }
+        .MuiDialogContent-root{
+          .MuiTableContainer-root{
+            .MuiTable-root{
+              .MuiTableHead-root{
+                .MuiTableRow-root{
+                  height: 10px;
+                  .MuiTableCell-root{
+                    background-color: blueviolet;
+                    color: white;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .MuiDialogActions-root{
+          .MuiTypography-root{
+            margin-right: 35px;
+          }
+        }
+      }
+    }
+    
   }

@@ -1,15 +1,11 @@
-const { json } = require('express');
 const mongoose = require('mongoose');
 
-const ExamModel = new mongoose.Schema({
-    TestAnswers: [{  }],
-    TestQuestions : [{ type: mongoose.Schema.Types.ObjectId, ref: "Questions", }],
+const ExamDetailsModel = new mongoose.Schema({
     Name: { type: String, required: true, trim: true },
-    profilePicture:{ type: String,trim: true },
     TopicName: { type: String, required: true, trim: true },
     TestScore: { type: Number, required: true },
     Date: { type: Date, required: true, default: Date.now },
     Email: { type: String, required: true, unique: true, lowercase: true },
 });
 
-module.exports = mongoose.model('Exam', ExamModel);
+module.exports = mongoose.model('ExamDetailsModel', ExamDetailsModel);

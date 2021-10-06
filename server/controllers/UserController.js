@@ -18,11 +18,10 @@ exports.login = async (request, response, next) => {
         let validpassword = await bcrypt.compare(request.body.password, user.password);
         if (!validpassword)
             return response.json({ data: request.body, statusCode: 400, "message": "Invalid UserName Or Password!" });
-
-        let foo = user;
-        delete foo.password;
+        
+        user.password=undefined;
         const token = jwt.sign({ sub: user.email }, JWTUtil.JWTCONSTANTS.CLIENT_SECRET, { expiresIn: JWTUtil.JWTCONSTANTS.TOKEN_EXPIRES_IN, issuer: JWTUtil.JWTCONSTANTS.ISSUER });
-        return response.json({ data: foo, statusCode: 200, message: "Login Success!", token: token });
+        return response.json({ data: user, statusCode: 200, message: "Login Success!", token: token });
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });
     }
@@ -36,8 +35,19 @@ exports.uploadProfilePicture = async (request, response, next) => {
         const url = request.protocol + '://' + request.get('host')
         let userFromDB = await User.findOne({ _id: requestUser._id });
         if (userFromDB) {
-            await User.findByIdAndUpdate({ _id: requestUser._id }, { $set: { profilePicture: url + '/uploads/' + request.file.filename } });
-            return response.json({ data: {}, statusCode: 200, message: "Profile Picture Uploaded Successfully!" });
+            //delete old image
+            if (userFromDB.profilePicture) {
+                let oldImagePath = "uploads/"+ userFromDB.profilePicture.split("uploads/")[1];
+                fs.unlink(oldImagePath, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }  
+
+             await User.findByIdAndUpdate({ _id: requestUser._id }, { $set: { profilePicture: url + '/uploads/' + request.file.filename } });
+            let updatedUser = await User.findOne({ _id: requestUser._id }, { password: false }).populate('roles');
+            return response.json({ data: updatedUser, statusCode: 200, message: "Profile Picture Uploaded Successfully!" });
         } else {
             return response.json({ data: {}, statusCode: 400, message: "User Not Found!" });
         }
@@ -115,13 +125,13 @@ exports.getUserById = async (request, response, next) => {
 
 exports.getAllUsers = async (request, response, next) => {
     try {
-        const pageNumber = request.body.pageNumber || 0;
-        const pageSize = request.body.pageSize || 10;
+        const pageNumber = parseInt(request.query.pageNumber) - 1 || 0;
+        const pageSize = parseInt(request.query.pageSize) || 5;
         const totalCount = await User.find().countDocuments();
         const users = await User.find({}, { password: false })
             .populate({ path: "company", select: ["name", "companyId"] })
             .populate({ path: "roles", select: ["role_name", "roleId"] })
-            .skip(pageNumber)
+            .skip(pageNumber * pageSize)
             .limit(pageSize);
         if (users)
             return response.json({ data: users, totalCount: totalCount, pageNumber: pageNumber, pageSize: pageSize, statusCode: 200, message: "OK" });

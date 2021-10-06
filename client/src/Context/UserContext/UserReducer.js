@@ -27,7 +27,8 @@ const userReducer = (state, action) => {
         case UserActions.GET_ALL_USERS: {
             return {
                 ...state,
-                users: action.payload || []
+                users: action.payload.data || [],
+                totalCount: action.payload.totalCount
             }
         }
         case UserActions.ADD_LOGIN_USER_DATA: {

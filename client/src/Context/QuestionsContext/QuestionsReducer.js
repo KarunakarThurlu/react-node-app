@@ -32,7 +32,14 @@ const QuestionsReducer = (state, action) => {
         case QuestionActions.GET_ALL_QUESTIONS: {
             return {
                 ...state,
-                questions: action.payload
+                questions: action.payload.data,
+                totalCount: action.payload.totalCount
+            }
+        }
+        case QuestionActions.QUESTIONS_COUNT: {
+            return {
+                ...state,
+                totalCount: action.payload
             }
         }
         default:

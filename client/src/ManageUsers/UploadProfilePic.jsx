@@ -13,18 +13,13 @@ import UserContext from '../Context/UserContext/UserContext';
 const UploadProfilePic = (props) => {
     const [loader, setLoader] = useState(false);
     const [image, setImage] = useState({});
-    const [data, setData] = useState({});
+    const [errorMessage, setErrorMesssage] = useState("");
     const [croppedImage, setCroppedImage] = useState();
     const [fileName, setFileName] = useState("");
     const [imagecrop, setImageCrop] = useState(false);
     const { uploadProfilePic } = useContext(UserContext);
 
 
-    useEffect(() => {
-        config.LOCAL_FORAGE.getItem("user").then((res) => {
-            setData(res);
-        });
-    }, [imagecrop]);
 
     const handleChange = (e) => {
         setImageCrop(true);
@@ -38,15 +33,22 @@ const UploadProfilePic = (props) => {
             setFileName(e.target.files[0].name);
             reader.readAsDataURL(file)
         }
+        setErrorMesssage("");
     }
     const getBlob = (blobdata) => {
         let cropedimg = new File([blobdata], fileName, { lastModified: new Date().getTime(), type: 'image/jpeg' })
         setCroppedImage(cropedimg);
     }
     const handleUpload = (e) => {
-        e.preventDefault();
-        setLoader(true);
-        uploadProfilePic(croppedImage);
+        if (fileName.length !== 0 && fileName !== "") {
+            e.preventDefault();
+            setLoader(true);
+            uploadProfilePic(croppedImage);
+            props.onClose();
+        } else {
+            setErrorMesssage("Please Select Image");
+        }
+
     }
 
     return (
@@ -65,7 +67,13 @@ const UploadProfilePic = (props) => {
                     />}
                 </DialogContent>
                 <DialogActions>
-                    <TextField variant="outlined" id="outlined-basic"    onChange={handleChange} type="file" />
+                    <TextField
+                        variant="outlined"
+                        id="outlined-basic"
+                        onChange={handleChange}
+                        error={errorMessage !== "" ? true : false}
+                        helperText={errorMessage}
+                        type="file" />
                     <Button variant="contained" onClick={handleUpload} className="addUserButton" color="primary">Upload</Button>
                 </DialogActions>
             </Dialog>

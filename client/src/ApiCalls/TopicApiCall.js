@@ -3,9 +3,17 @@ import GetAuthToken from "../Utils/GetAuthToken";
 import axios from "axios"
 
 const TopicApiCall = {
-    getAllTopics: async (data) => {
+    getAllTopics: async (pageNumber,pageSize) => {
         const token = await GetAuthToken();
-        return  axios.get(config.Base_URL + "/topic/getalltopics",{
+        return  axios.get(config.Base_URL + `/topic/getalltopics?pageNumber=${pageNumber}&pageSize=${pageSize}`,{
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },//getalltopicsfordropdown
+    getAllTopicsWithoutpagination: async () => {
+        const token = await GetAuthToken();
+        return  axios.get(config.Base_URL + `/topic/getalltopicsfordropdown`,{
             headers: {
                 Authorization: `Bearer ` + token,
             },

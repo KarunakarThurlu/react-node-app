@@ -27,7 +27,8 @@ const TopicsReducer = (state, action) => {
         case TopicActions.GET_ALL_TOPICS: {
             return {
                 ...state,
-                Topics: action.payload
+                Topics: action.payload.data,
+                totalCount: action.payload.totalCount
             }
         }
         default:

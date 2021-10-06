@@ -19,7 +19,7 @@ export default function TopicModel(props) {
 
     useEffect(() => {
         //Edit Topic data Model
-        if (props.data.topicName !== undefined && props.data.description !== undefined) {
+        if (props.data!==null && props.data.topicName !== undefined && props.data.description !== undefined) {
             setData({ topicName: props.data.topicName, description: props.data.description, _id: props.data._id });
             clearErros();
         } else {
@@ -30,13 +30,14 @@ export default function TopicModel(props) {
     }, [props.data]);
     const handleSubmit = () => {
         if (validate()) {
-            if (props.data._id !== undefined && props.data._id !== "") {
+            if (props.data!==null && props.data._id !== undefined && props.data._id !== "") {
                 updateTopic(data);
-                props.handleClose();
+                props.onClose();
             } else {
                 saveTopic(data);
-                props.handleClose();
+                props.onClose();
             }
+            setData({ topicName: "", description: "", _id: "" });
             clearErros();
         }
     }
@@ -65,7 +66,7 @@ export default function TopicModel(props) {
         <div className="AddTopicContainer">
             <Dialog
                 open={props.open}
-                onClose={props.handleClose}
+                onClose={props.onClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 className="MuiDialog-paper-AddTopicModel"
@@ -101,7 +102,7 @@ export default function TopicModel(props) {
                     <Button onClick={handleSubmit} color="primary" variant="contained">
                         Submit
                     </Button>
-                    <Button onClick={props.handleClose} color="primary" autoFocus variant="contained">
+                    <Button onClick={props.onClose} color="primary" autoFocus variant="contained">
                         Cancel
                     </Button>
                 </DialogActions>

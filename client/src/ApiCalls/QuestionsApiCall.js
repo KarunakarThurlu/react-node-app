@@ -12,9 +12,9 @@ const QuestionsApiCall = {
             },
         });
     },
-    getAllQuestions: async () => {
+    getAllQuestions: async (pageNumber,pageSize) => {
         const token = await GetAuthToken();
-        return  axios.get("/question/getallquestions", {
+        return  axios.get(`/question/getallquestions?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },

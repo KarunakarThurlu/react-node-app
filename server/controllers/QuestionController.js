@@ -62,13 +62,15 @@ exports.getQuestionById = async (request, response, next) => {
 
 exports.getAllQuestions = async (request, response, next) => {
     try {
-        const pageNumber = request.body.pageNumber || 0;
-        const pageSize = request.body.pageSize || 30;
-        const totalCount = await Question.find().count();
+        const pageNumber = parseInt(request.query.pageNumber) - 1 || 0;
+        const pageSize = parseInt(request.query.pageSize) || 5;
+        const totalCount = await Question.find({})
+            .populate({ path: "creator", select: ["name", "email"] })
+            .populate({ path: "topic", select: "topicName" }).countDocuments();
         const questions = await Question.find({})
             .populate({ path: "creator", select: ["name", "email"] })
             .populate({ path: "topic", select: "topicName" })
-            .skip(pageNumber).limit(pageSize);
+            .skip(pageNumber * pageSize).limit(pageSize);
         if (questions) {
             return response.json({ data: questions, totalCount: totalCount, statusCode: 200, message: "OK" });
         } else {
@@ -188,6 +190,16 @@ exports.getTestScore = async (request, response, next) => {
             const questions = await Question.find({ topic: request.query.id }).skip(parseInt(pageNumber)).limit(parseInt(pageSize));
             if (questions) {
                 const answeredQuestions = request.body;
+                const TestQuestions=[];
+                const TestAnswers=[];
+                
+                answeredQuestions.map((v, i) => {
+                    TestQuestions.push(v._id);
+                    let obj={};
+                    obj[v._id]=v.answer;
+                    TestAnswers.push(obj);
+                });
+
 
                 //Finding the correct answer
                 let testScore = 0;
@@ -205,9 +217,12 @@ exports.getTestScore = async (request, response, next) => {
                 const examResults = new Exam({
                     Name: user.firstName+" "+user.lastName,
                     Email: user.email,
+                    profilePicture: user.profilePicture,
                     TestScore: testScore,
                     TopicName: topic.topicName,
-                    Date: Date.now()
+                    Date: Date.now(),
+                    TestQuestions: TestQuestions,
+                    TestAnswers: TestAnswers
                 });
                 await examResults.save();
 

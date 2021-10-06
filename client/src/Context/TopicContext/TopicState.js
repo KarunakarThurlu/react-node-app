@@ -9,6 +9,7 @@ import Notifier from '../../Utils/Notifier';
 const TopicsState = (props) => {
     const initialState = {
         Topics: [],
+        totalCount: 0,
     }
     const [state, dispatch] = useReducer(TopicReducer, initialState);
 
@@ -65,12 +66,12 @@ const TopicsState = (props) => {
             });
     }
 
-    const getAllTopics = async () => {
-        await TopicApiCall.getAllTopics()
+    const getAllTopics = async (pageNumber,pageSize) => {
+        await TopicApiCall.getAllTopics(pageNumber,pageSize)
             .then(response => {
                 dispatch({
                     type: TopicActions.GET_ALL_TOPICS,
-                    payload: response.data.data
+                    payload: response.data
                 })
             })
             .catch(error => {
@@ -98,7 +99,7 @@ const TopicsState = (props) => {
 
     return (
         <TopicsContext.Provider value={{
-            Topics: state.Topics,
+            Topics: state,
             saveTopic,
             getTopic,
             deleteTopic,

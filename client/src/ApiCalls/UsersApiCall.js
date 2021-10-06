@@ -4,9 +4,9 @@ import config from "./Config";
 
 const UsersApiCalls = {
 
-    getAllUsers: async () => {
+    getAllUsers: async (pageNumber,pageSize) => {
         const token = await GetAuthToken();
-        return  axios.get("/user/getallusers", {
+        return  axios.get(`/user/getallusers?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             headers: {
                 Authorization: `Bearer ` + token,
             },

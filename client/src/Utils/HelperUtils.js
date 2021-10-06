@@ -2,6 +2,10 @@ import moment from "moment";
 
 const HelperUtils={
 
+    //format date with tomestamp
+    formatDateWithTimeStamp(date) {
+        return moment(date).format('YYYY-MM-DD HH:mm');
+    },
     formateDate:(date)=>{
         if ( date!== undefined) {
                 return moment(date).format('YYYY-MM-DD');

@@ -8,6 +8,7 @@ router.put("/updatetopic", topicController.updateTopic);
 router.get("/gettopic", topicController.findTopicById);
 router.delete("/deletetopic", topicController.deleteTopicById);
 router.get("/getalltopics", topicController.getAllTopics);
+router.get("/getalltopicsfordropdown", topicController.getAllTopicsWithoutPagination);
 
 
 

@@ -29,8 +29,8 @@ exports.updateTopic = async (request, response, next) => {
             keys.map((v, i) => {
                 topic._doc[keys[i]] = request.body[v];
             });
-            topic.creator=requestUser._id;
-            const updatedTopic =  await Topic.findByIdAndUpdate({ _id: request.body._id }, topic, (error, doc, res) => { });
+            topic.creator = requestUser._id;
+            const updatedTopic = await Topic.findByIdAndUpdate({ _id: request.body._id }, topic, (error, doc, res) => { });
             return response.json({ data: updatedTopic, statusCode: 200, message: "Topic Updated Successfully." });
         } else {
             return response.json({ data: {}, statusCode: 400, message: "Not Found" });
@@ -66,7 +66,22 @@ exports.deleteTopicById = async (request, response, next) => {
 
 exports.getAllTopics = async (request, response, next) => {
     try {
-        const t = await Topic.find().populate({ path: "creator", select: ["name", "email"] });
+        const pageNumber = parseInt(request.query.pageNumber) - 1 || 0;
+        const pageSize = parseInt(request.query.pageSize) || 5;
+        const totalCount = await Topic.find().countDocuments();
+        const t = await Topic.find({}).populate({ path: "creator", select: ["name", "email"] })
+            .skip(pageNumber * pageSize)
+            .limit(pageSize);
+        return response.json({ data: t, totalCount: totalCount,statusCode: 200, message: "OK" });
+    } catch (error) {
+        return response.json({ data: {}, statusCode: 500, message: error.message });
+    }
+}
+
+//getAll Topics Without pagination with topicName, _id for Showing Add Question Dropdown
+exports.getAllTopicsWithoutPagination = async (request, response, next) => {
+    try {
+        const t = await Topic.find().select("topicName _id");
         return response.json({ data: t, statusCode: 200, message: "OK" });
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });

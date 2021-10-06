@@ -20,7 +20,7 @@ function SubmitQuestionModel(props) {
     const [errors, setErrors] = useState({ name: "", optionA: '', optionB: '', optionC: '', optionD: '', topic: '', answer: '' });
 
     useEffect(() => {
-        TopicApiCall.getAllTopics()
+        TopicApiCall.getAllTopicsWithoutpagination()
             .then(response => setTopics(response.data.data))
             .catch(error => console.log(error));
     }, []);
@@ -176,8 +176,14 @@ function SubmitQuestionModel(props) {
         return isValid;
     }
     const getTopic = () => {
-        if (data.topic !== '' && data.topic !== undefined)
-            return (<option value={data.topic} >{data.topic}</option>)
+        if (data.topic !== '' && data.topic !== undefined){
+            let t=topics.filter(topic => {
+                if (topic._id === data.topic || topic.topicName === data.topic) {
+                    return topic.topicName;
+                }
+            })
+            return (<option value={data.topic} >{t[0] && t[0].topicName}</option>)
+        }
         else
             return (<option  value="" ></option>)
     }
