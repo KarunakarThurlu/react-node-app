@@ -7,7 +7,7 @@ import HelperUtils from "../Utils/HelperUtils";
 import Home from '../HomeComponent/Home';
 import DeletePopUpModel from '../Utils/WarningPopUpModel';
 import ReviewExam from "./ReviewExam";
-import MessageConstants from '../Utils/MessageConstants';
+import CommonConstants from '../Utils/CommonConstants';
 import Notifier from '../Utils/Notifier';
 import DataTable from '../Utils/DataTable';
 import ViewProfilePic from '../ManageUsers/ViewProfilePic';
@@ -98,7 +98,7 @@ const ExamsTable = () => {
       {
         title: 'profilePicture', field: 'imageUrl',
         render: rowData =>
-            <img src={rowData.profilePicture !== null && rowData.profilePicture !== undefined ? rowData.profilePicture : "/user.png"} alt="" onClick={() => { setCurrentRowData(rowData); setOpenProfilePic(true) }} style={{ width: 40, borderRadius: '50%' }} />
+            <img src={rowData.profilePicture !== null && rowData.profilePicture !== undefined ? rowData.profilePicture : "/user.png"} alt="" onClick={() => { setCurrentRowData(rowData); setOpenProfilePic(true) }} style={{ width: 35, borderRadius: '50%' }} />
       },
       { field: 'Name', title: 'Name', },
       { field: 'Email', title: 'Email', },
@@ -123,7 +123,7 @@ const ExamsTable = () => {
             <Home />
             <ViewProfilePic open={openProfilePic} onClose={() => setOpenProfilePic(false)} image={currentRowData.profilePicture} />
             <ReviewExam open={showReviewExam} onClose={() => setShowReviewExam(false)} data={testQuestions} score={testScore} />
-            <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={MessageConstants.Delete_Exam_Warning} handleClose={() => setOpenDeleteModel(false)} />
+            <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={CommonConstants.Delete_Exam_Warning} handleClose={() => setOpenDeleteModel(false)} />
             <div className="Data-Table">
                 <DataTable
                     data={TableData}

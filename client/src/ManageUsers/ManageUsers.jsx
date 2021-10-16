@@ -3,10 +3,11 @@ import HelperUtils from "../Utils/HelperUtils"
 import UserContext from '../Context/UserContext/UserContext';
 import Home from '../HomeComponent/Home';
 import WarningPopupModel from "../Utils/WarningPopUpModel"
-import MessageConstants from '../Utils/MessageConstants';
+import CommonConstants from '../Utils/CommonConstants';
 import AddUserModel from './AddUserModel';
 import ViewProfilePic from './ViewProfilePic';
 import DataTable from "../Utils/DataTable";
+import UsersVisualization from './UsersVisualization';
 
 import "./manageusers.scss";
 import "../Utils/DataTable.scss"
@@ -17,6 +18,7 @@ function ManageUsers(props) {
     const [open, setOpen] = useState(false);
     const [openProfilePic, setOpenProfilePic] = useState(false);
     const [showWarningPopup, setShowWarningPopup] = useState(false);
+    const [showVisualization,setShowVisualization]=useState(false);
     const [formDataToEdit, setFormDataToEdit] = useState({});
     const [userIdForDelete, setUserIdForDelete] = useState(0);
     const [currentRowData, setCurrentRowData] = useState({});
@@ -81,13 +83,14 @@ function ManageUsers(props) {
         setShowWarningPopup(false);
         deleteUser(userIdForDelete);
     }
-    const TableData = { columns, rows, page, rowsPerPage, totalCount,toolTip:"Add User",title:"Users Data ",showActions:true }
+    const TableData = { columns, rows, page, rowsPerPage, totalCount,toolTip:"Add User",showGroupByHeader:true,title:"Users Data ",showActions:true }
     return (
         <div className="ManageUsers">
             <Home />
+            <UsersVisualization  open={showVisualization} onClose={()=>setShowVisualization(false)}/>
             <ViewProfilePic open={openProfilePic} onClose={() => setOpenProfilePic(false)} image={currentRowData.profilePicture} />
             <AddUserModel open={open} editFormData={formDataToEdit} onClose={() => setOpen(false)} isAdmin={"true"} />
-            <WarningPopupModel open={showWarningPopup} message={MessageConstants.Delete_User_Warning} onClickYes={handleDeleteUser} handleClose={() => setShowWarningPopup(false)} />
+            <WarningPopupModel open={showWarningPopup} message={CommonConstants.Delete_User_Warning} onClickYes={handleDeleteUser} handleClose={() => setShowWarningPopup(false)} />
             <div className="Data-Table">
                 <DataTable
                     data={TableData}
@@ -99,6 +102,7 @@ function ManageUsers(props) {
                     setRowsPerPage={setRowsPerPage}
                     setPage={setPage}
                     getDataOnPageChange={getDataOnPageChange}
+                    setShowVisualization={setShowVisualization}
                 />
             </div>
         </div>

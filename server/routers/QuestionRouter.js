@@ -13,5 +13,7 @@ router.delete("/deletequestion", JWTConfig.verify, [JWTConfig.Admin], questionCo
 router.post("/gettestscore", questionController.getTestScore);
 router.get("/totalquestionscountoftopic", questionController.totalQuestionsCountOfTopic);
 router.get("/getquestionsforexam", questionController.getQuestionsForExam);
-
+router.get("/getquestionsforvisualization", questionController.getQuestionsDataForVisualization);
+router.get("/getdatafordashboard",questionController.getDataForDashBoard);
+router.get("/userquestionsviewindashboard",questionController.userQuestionsViewInDashboard);
 module.exports = router

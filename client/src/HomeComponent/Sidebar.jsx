@@ -13,7 +13,6 @@ import GroupIcon from '@material-ui/icons/Group';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import LayersIcon from '@material-ui/icons/Layers';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
 
 function Sidebar(props) {
 
@@ -22,7 +21,7 @@ function Sidebar(props) {
             <Drawer variant="persistent"
                 anchor="left" openSecondary={true} open={props.open} >
                 <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", height: "4.0em", backgroundColor: "hsl(231deg 48% 48%)" }}>
-                    <img src="/java-horizontal.svg" alt="" style={{height: "45px"}} />
+                    <img src="/java-horizontal.svg" alt="" style={{ height: "45px" }} />
                     <IconButton onClick={props.onHide} >
                         <CloseIcon style={{ color: "InactiveBorder", fontSize: "2.0rem" }} />
                     </IconButton>
@@ -30,7 +29,7 @@ function Sidebar(props) {
                 <Divider />
                 <MenuItem onClick={props.onHide} >
                     <DashboardIcon />
-                    <Link to="/dashboard" className="MuiMenuItem-root-sidebar">
+                    <Link to="/questionsdashboard" className="MuiMenuItem-root-sidebar">
                         <Typography variant="h6">
                             Dashboard
                         </Typography>
@@ -49,6 +48,14 @@ function Sidebar(props) {
                     <Link to="/addquestion" className="MuiMenuItem-root-sidebar">
                         <Typography variant="h6">
                             Add Question
+                        </Typography>
+                    </Link>
+                </MenuItem>
+                <MenuItem onClick={props.onHide}>
+                    <WebAssetIcon />
+                    <Link to="/examsdetails" className="MuiMenuItem-root-sidebar">
+                        <Typography variant="h6">
+                            Exams
                         </Typography>
                     </Link>
                 </MenuItem>
@@ -75,14 +82,6 @@ function Sidebar(props) {
                             <Link to="/topic" className="MuiMenuItem-root-sidebar">
                                 <Typography variant="h6">
                                     Topics
-                                </Typography>
-                            </Link>
-                        </MenuItem>
-                        <MenuItem onClick={props.onHide}>
-                            <WebAssetIcon />
-                            <Link to="/examsdetails" className="MuiMenuItem-root-sidebar">
-                                <Typography variant="h6">
-                                    Exams
                                 </Typography>
                             </Link>
                         </MenuItem>

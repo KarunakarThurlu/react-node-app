@@ -37,3 +37,12 @@
   }
 }
 
+.highcharts-credits{
+  display: none;
+}
+
+.highcharts-contextbutton{
+  display: none;
+}
+
+

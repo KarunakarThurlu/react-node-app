@@ -10,8 +10,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import WarningPopupModel from "../Utils/WarningPopUpModel"
 import DataTable from "../Utils/DataTable";
 import "./AddQuestions.scss";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import QuestionsContext from '../Context/QuestionsContext/QuestionsContext';
-import MessageConstants from '../Utils/MessageConstants';
+import CommonConstants from '../Utils/CommonConstants';
+import QuestionsVisualization from './QuestionsVisualization';
 
 
 const LightTooltip = withStyles((theme) => ({
@@ -34,6 +36,8 @@ function SubmitQuestion(props) {
     const [currentQuestion, setCurrentQuestion] = useState();
     const [showWarningPopup, setShowWarningPopup] = useState(false);
     const [questionIdForDelete, setQuestionIdForDelete] = useState(0);
+    const [showVisualization,setShowVisualization]=useState(false);
+    const [spinner,setSpinner]=useState(false);
     const { getAllQuestions, questions, deleteQuestion,updateQuestion } = useContext(QuestionsContext);
 
     useEffect(() => {
@@ -41,12 +45,16 @@ function SubmitQuestion(props) {
     }, []);
 
     const handleChangePage = (event, newPage) => {
+        setSpinner(true);
         setPage(newPage);
         getAllQuestions(newPage, rowsPerPage);
+        //setSpinner(false);
     };
     const getDataOnPageChange =(pageSize)=>{
+        setSpinner(true);
         setPage(1);
         getAllQuestions(1, pageSize);
+       // setSpinner(false);
     }
     const handleDeleteQuestion = () => {
         deleteQuestion(questionIdForDelete);
@@ -120,13 +128,15 @@ function SubmitQuestion(props) {
         updateQuestion(data);
         setStatusModelOpen(false)
     }
-    const TableData = { columns, rows, page, rowsPerPage, totalCount,toolTip:"Add Question",title:"Questions Data" ,showActions:true}
+    const TableData = { columns, rows, page, rowsPerPage, totalCount,toolTip:"Add Question",showGroupByHeader:true,title:"Questions Data" ,showActions:true}
     return (
         <div className="questions-container">
             <Home />
+            {spinner && <CircularProgress/>}
+            <QuestionsVisualization open={showVisualization} onClose={()=>setShowVisualization(false)}/>
             <ChangeQuestionStatusModel updateQuestion={updateQuestioninList} open={statusModelOpen} CQData={currentQuestion} onClose={() => setStatusModelOpen(false)} />
             <SubmitQuestionModel open={open} editFormData={formDataToEdit} onClose={() => setOpen(false)} />
-            <WarningPopupModel open={showWarningPopup} message={MessageConstants.Delete_Question_Warning} onClickYes={handleDeleteQuestion} handleClose={() => setShowWarningPopup(false)} />
+            <WarningPopupModel open={showWarningPopup} message={CommonConstants.Delete_Question_Warning} onClickYes={handleDeleteQuestion} handleClose={() => setShowWarningPopup(false)} />
             <div className="Data-Table">
                 <DataTable
                     data={TableData}
@@ -138,6 +148,7 @@ function SubmitQuestion(props) {
                     setRowsPerPage={setRowsPerPage}
                     setPage={setPage}
                     getDataOnPageChange={getDataOnPageChange}
+                    setShowVisualization={setShowVisualization}
                 />
             </div>
         </div>

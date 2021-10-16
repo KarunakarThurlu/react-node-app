@@ -15,7 +15,7 @@ exports.getUserDetailsFromToken = async (request) => {
         console.log("from cache");
     }else{
         user = await User.findOne({ email: decodedtoken.sub }).populate("roles");
-        myCache.set(decodedtoken.sub, user);
+        myCache.set(decodedtoken.sub, user,60*60*1);
     }
     console.info("########################### "+new Date().toISOString() + " Exit  Of getUserName from Token method  ############################")
     return user !== null ? user._doc : null;

@@ -2,15 +2,27 @@ const Exam = require("../models/ExamModel");
 const GetUserFromToken = require("../utils/GetUserDetailsFromToken");
 
 exports.getAllExamsDetails = async (request, response, next) => {
+    const requestUser = await GetUserFromToken.getUserDetailsFromToken(request);
+    console.log(requestUser);
     try {
         const pageNumber = parseInt(request.query.pageNumber) - 1 || 0;
         const pageSize = parseInt(request.query.pageSize) || 5;
-        const exams = await Exam.find({})
-            .populate("TestQuestions")
-            .skip(pageNumber * pageSize)
-            .limit(pageSize);
-        const totalCount = await Exam.find().countDocuments();
-
+        let isAdmin = requestUser.roles.some(role => role.role_name === "ADMIN");
+        let exams;
+        let totalCount;
+        if (isAdmin) {
+            exams = await Exam.find({})
+                .populate("TestQuestions")
+                .skip(pageNumber * pageSize)
+                .limit(pageSize);
+            totalCount = await Exam.find().countDocuments();
+        } else {
+            exams = await Exam.find({ UserId: requestUser._id })
+                .populate("TestQuestions")
+                .skip(pageNumber * pageSize)
+                .limit(pageSize);
+            totalCount = await Exam.find({ UserId: requestUser._id }).countDocuments();
+        }
         const examsData = {
             data: exams,
             totalCount: totalCount,
@@ -41,8 +53,8 @@ exports.searchExam = async (request, response, next) => {
         const pageNumber = parseInt(request.query.pageNumber) - 1 || 0;
         const pageSize = parseInt(request.query.pageSize) || 5;
         const searchText = request.query.searchText;
-        const exams = await Exam.find({ Name: { $regex: searchText ,options:'i'} })
-        
+        const exams = await Exam.find({ Name: { $regex: searchText, options: 'i' } })
+
             .populate("TestQuestions")
             .skip(pageNumber * pageSize)
             .limit(pageSize);
@@ -55,8 +67,8 @@ exports.searchExam = async (request, response, next) => {
             pageSize: pageSize
         }
         return response.json({ data: examsData, statusCode: 200, message: "OK" });
-   
-    }catch(error){
+
+    } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });
     }
 }

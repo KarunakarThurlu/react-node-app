@@ -91,6 +91,30 @@ const QuestionsApiCall = {
                 Authorization: `Bearer ` + token,
             },
         });
+    },//userquestionsviewindashboard
+    getQuestionsDataForVisualization: async () => {
+        const token = await GetAuthToken();
+        return  axios.get(`${config.Base_URL}/question/getquestionsforvisualization`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    userQuestionsViewInDashboard: async (pageNumber,pageSize,status) => {
+        const token = await GetAuthToken();
+        return  axios.get(`${config.Base_URL}/question/userquestionsviewindashboard?pageNumber=${pageNumber}&pageSize=${pageSize}&status=${status}`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
+    getDataForUsersdashboard: async () => {
+        const token = await GetAuthToken();
+        return  axios.get(`${config.Base_URL}/question/getdatafordashboard`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
     },
 
 }

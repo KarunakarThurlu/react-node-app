@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { AppBar, Toolbar, IconButton, Button, Typography } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core'
 import MenuIcon from "@material-ui/icons/Menu"
 import PersonIcon from '@material-ui/icons/Person';
 import   LogOutIcon  from '@material-ui/icons/PowerSettingsNewOutlined';
@@ -16,6 +16,7 @@ import Sidebar from './Sidebar';
 import ChangePassword from './ChangePassword';
 import AddUserModel from '../ManageUsers/AddUserModel';
 import UserContext from "../Context/UserContext/UserContext";
+
 
 import './sidebar.scss';
 
@@ -120,10 +121,11 @@ function NavBar(props) {
                     <Typography variant="h6" >
                         Java Quiz Application
                     </Typography>
-                    {loggedInUserData!==null &&  loggedInUserData.profilePicture!==null?<img onClick={handleClick}  src={loggedInUserData.profilePicture}  alt="" style={{width: 40, borderRadius: '50%'}}/>: <AccountCircleSharpIcon onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />}
+                    {loggedInUserData!==null && loggedInUserData.profilePicture!==undefined?<img onClick={handleClick}  src={loggedInUserData.profilePicture} title={loggedInUserData && loggedInUserData.email}  alt="" style={{width: 40, borderRadius: '50%'}}/>: <AccountCircleSharpIcon title={loggedInUserData && loggedInUserData.email} onClick={handleClick} style={{ color: "white", fontSize: "2.5rem" }} />}
                 </Toolbar>
             </AppBar>
             <Sidebar open={sidebarOpen} isAdmin={isAdmin} onHide={() => setSidebarOpen(false)} />
+            
         </div>
     )
 }

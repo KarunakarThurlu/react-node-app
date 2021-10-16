@@ -12,7 +12,6 @@ import Notifier from '../Utils/Notifier';
 import config from "../ApiCalls/Config";
 
 function ChangePassword(props) {
-    let history = useHistory()
     const [data, setData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
     const [errors, setErrors] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 

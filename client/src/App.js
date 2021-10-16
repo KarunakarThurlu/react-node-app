@@ -12,7 +12,9 @@ import PageNotFoud from "./Utils/Custom404Page";
 import AddQuestion from "./SubmitQuestionComponent/AddQuestion";
 import PublicRoute from "./Router/PublicRoute";
 import PrivateRoute from "./Router/PrivateRoute";
+import QuestionsDashBoard from './DashboardComponent/QuestionsDashBoard';
 import DashBoard from './DashboardComponent/DashBoard';
+import GridStackDashBoard from './DashboardComponent/GridStackJsDashBoard';
 import WriteExam from './WriteExamComponent/WriteExam';
 import UserState from "./Context/UserContext/UserState";
 import QuestionState from "./Context/QuestionsContext/QuestionsState";
@@ -35,7 +37,9 @@ function App() {
             <PublicRoute restricted={true} component={Register} exact path="/signup" />
             <PublicRoute restricted={false} component={ForgotPassword} exact path="/forgotpassword" />
             <PrivateRoute component={Home} exact path="/home" />
-            <PrivateRoute component={DashBoard} exact path="/dashboard" />
+            <PrivateRoute component={QuestionsDashBoard} exact path="/questionsdashboard" />
+            <PrivateRoute component={DashBoard} exact path="/usersdashboard" />
+            <PrivateRoute component={GridStackDashBoard} exact path="/superadmindashboard" />
             <PrivateRoute component={WriteExam} exact path="/writeexam" />
             <PrivateRoute component={QuestionsTable} exact path="/submitquestion" />
             <PrivateRoute component={ManageUsers} exact path="/manageusers" />

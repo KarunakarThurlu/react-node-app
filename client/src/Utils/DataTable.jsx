@@ -2,6 +2,7 @@
 import React from 'react'
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import BarChartRoundedIcon from '@material-ui/icons/BarChartRounded';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MaterialTable from 'material-table';
 import Pagination from '@mui/material/Pagination';
@@ -14,11 +15,7 @@ import "./DataTable.scss"
 
 function DataTable(props) {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-
     const handleClose = (e) => {
-        setAnchorEl(null);
         props.setPage(1)
         props.setRowsPerPage(e.target.textContent === undefined ? props.data.rowsPerPage : e.currentTarget.textContent);
         props.getDataOnPageChange(e.currentTarget.textContent);
@@ -26,7 +23,7 @@ function DataTable(props) {
     return (
         <>
             <MaterialTable
-                title={props.data.title}
+                title=<h4 title={props.data.totalCount }>{props.data.title} </h4>
                 data={props.data.rows}
                 columns={props.data.columns}
                 actions={
@@ -34,6 +31,11 @@ function DataTable(props) {
                         {
                             icon: () => <AddIcon onClick={() => { props.setOpen(true); props.setFormDataToEdit(null) }} />,
                             tooltip: props.data.toolTip,
+                            isFreeAction: true
+                        },
+                        {
+                            icon: () => <BarChartRoundedIcon onClick={() => { props.setShowVisualization(true); }} />,
+                            tooltip: 'Chart View',
                             isFreeAction: true
                         },
                         rowData => ({
@@ -56,7 +58,7 @@ function DataTable(props) {
                 }
                 options={{
                     exportButton: true,
-                    grouping: true,
+                    grouping: props.data.showGroupByHeader===true?true:false,
                     sorting: true,
                     maxBodyHeight: 351,
                     headerStyle: { position: 'sticky', top: 0, backgroundColor: '#01579b', color: '#FFF', whiteSpace: 'nowrap' },

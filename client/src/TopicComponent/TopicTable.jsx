@@ -5,8 +5,9 @@ import DeletePopUpModel from '../Utils/WarningPopUpModel';
 import HelperUtils from '../Utils/HelperUtils';
 import TopicModel from './TopicModel';
 import WarningPopupModel from "../Utils/WarningPopUpModel"
-import MessageConstants from '../Utils/MessageConstants';
+import CommonConstants from '../Utils/CommonConstants';
 import DataTable from "../Utils/DataTable";
+import TopicVisualization from "./TopicVisualization";
 import "./topic.scss";
 
 const TopicTable = () => {
@@ -17,6 +18,7 @@ const TopicTable = () => {
   const [showWarningPopup, setShowWarningPopup] = useState(false);
   const [editTopicData, setEditTopicData] = useState(null);
   const [deleteTopicId, setDeleteTopicId] = useState(0);
+  const [showVisualization,setShowVisualization]=useState(false);
   const { Topics, getAllTopics, deleteTopic } = useContext(TopicContext);
 
 
@@ -63,13 +65,14 @@ const TopicTable = () => {
     deleteTopic(deleteTopicId);
     setShowWarningPopup(false);
   }
-  const TableData = { columns, rows, page, rowsPerPage, totalCount: Topics.totalCount, toolTip: "Add Topic", title: "Topics Data " ,showActions:true}
+  const TableData = { columns, rows, page, rowsPerPage, totalCount: Topics.totalCount, toolTip: "Add Topic",showGroupByHeader:true, title: "Topics Data " ,showActions:true}
   return (
     <div className="topic-table">
       <Home />
-      <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={MessageConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
+      <TopicVisualization open={showVisualization} onClose={()=>setShowVisualization(false)}/>
+      <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={CommonConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
       <TopicModel open={open} data={editTopicData} onClose={() => setOpen(false)} />
-      <WarningPopupModel open={showWarningPopup} message={MessageConstants.Delete_Topic_Warning} onClickYes={handleConformDelete} handleClose={() => setShowWarningPopup(false)} />
+      <WarningPopupModel open={showWarningPopup} message={CommonConstants.Delete_Topic_Warning} onClickYes={handleConformDelete} handleClose={() => setShowWarningPopup(false)} />
       <div className="Data-Table">
         <DataTable
           data={TableData}
@@ -81,6 +84,7 @@ const TopicTable = () => {
           setRowsPerPage={setRowsPerPage}
           setPage={setPage}
           getDataOnPageChange={getDataOnPageChange}
+          setShowVisualization={setShowVisualization}
         />
       </div>
     </div>

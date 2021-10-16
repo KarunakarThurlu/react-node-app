@@ -10,6 +10,7 @@ const ExamModel = new mongoose.Schema({
     TestScore: { type: Number, required: true },
     Date: { type: Date, required: true, default: Date.now },
     Email: { type: String, required: true, unique: true, lowercase: true },
+    UserId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 module.exports = mongoose.model('Exam', ExamModel);

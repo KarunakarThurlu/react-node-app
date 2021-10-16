@@ -19,7 +19,7 @@ import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 
 import "./writeexam.scss";
 import { Typography } from '@material-ui/core';
-import MessageConstants from '../Utils/MessageConstants';
+import CommonConstants from '../Utils/CommonConstants';
 import ExamResults from './ExamResults';
 
 function WriteExam(props) {
@@ -42,7 +42,7 @@ function WriteExam(props) {
     const [errors, setErrors] = useState({ topic: '', questionsrange: '' });
 
     useEffect(() => {
-        TopicApiCall.getAllTopics()
+        TopicApiCall.getAllTopicsWithoutpagination()
             .then(response => setTopics(response.data.data))
             .catch(error => console.log(error));
     }, []);
@@ -191,7 +191,7 @@ function WriteExam(props) {
     return (
         <div className="write-exam-container">
             <Home />
-            <WarningPopUpModel open={openSubmitWarningModel} message={MessageConstants.Submit_Exam_Warning} onClickYes={handleSubmit} handleClose={() => setOpenSubmitWarningModel(false)} />
+            <WarningPopUpModel open={openSubmitWarningModel} message={CommonConstants.Submit_Exam_Warning} onClickYes={handleSubmit} handleClose={() => setOpenSubmitWarningModel(false)} />
             <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)} testScore={testScore} />
             {loader && <CircularProgress className="loader" />}
             {startExam === true ? <Grid container >

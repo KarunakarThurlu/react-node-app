@@ -9,7 +9,7 @@
     "build": "cd client && npm install && npm run build"
   },
   "engines": {
-    "node": "10.19.0"
+    "node": "v14.18.0"
   },
   "repository": {
     "type": "git",

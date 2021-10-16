@@ -57,7 +57,15 @@ const UsersApiCalls = {
                 Authorization: `Bearer ` + token,
             },
         });
-    }
+    },
+    getUsersDataForVisualization: async () => {
+        const token = await GetAuthToken();
+        return  axios.get(config.Base_URL + `/user/getusersdataforvisualization`, {
+            headers: {
+                Authorization: `Bearer ` + token,
+            },
+        });
+    },
 
 }
 

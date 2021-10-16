@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -7,16 +7,27 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
-
+import TextField from '@material-ui/core/TextField';
 import Notifier from '../Utils/Notifier';
 import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 import "./AddQuestions.scss"
 
 function ChangeQuestionStatusModel(props) {
-
+    useEffect(()=>{
+        setData({showreason:false,reason:""});
+        setErrors({reason:""});
+    },[]);
+   const[data,setData]= useState({showreason:false,reason:""});
+   const[errors,setErrors]= useState({reason:''});
     const handleClick = (value) => {
-        props.updateQuestion({ _id: props.CQData._id, status: value });
+        if(value==='REJECTED' && data.showreason===false)
+            setData({...data,showreason:true})
+        else if(value==='REJECTED' && data.showreason===true && data.reason==="")
+            setErrors({...errors,reason:'Please enter reason'})
+        else if(data.reason.length>50)
+            setErrors({...errors,reason:'Reason should be less than 50 characters'})
+        else
+            props.updateQuestion({ _id: props.CQData._id, status: value,rejectedReason:data.reason });
     }
     return (
         <div>
@@ -40,6 +51,28 @@ function ChangeQuestionStatusModel(props) {
                     <Typography color='initial' variant='h6' component='h6' align='left' >
                         D.  {props.CQData !== undefined ? props.CQData.optionD : ""}<br />
                     </Typography>
+                    <Typography color='initial' variant='h6' component='h6' align='left' >
+                        Answer.  <b>{props.CQData !== undefined ? props.CQData.answer : ""}</b><br />
+                    </Typography>
+                {data.showreason ===true && <TextField
+                    style={{marginTop:'20px',width:"40em"}}
+                    error={errors.reason !== "" ? true : false}
+                    helperText={errors.reason}
+                    multiline={true}
+                    rows={2}
+                    className="questionName"
+                    id="outlined-basic"
+                    variant="outlined"
+                    label="Reason"
+                    type="text"
+                    name="reason"
+                    value={data.reason}
+                    onChange={(e)=>{
+                         setData({...data,reason:e.target.value});
+                         if(data.reason.length>4)
+                                setErrors({...errors,reason:""});
+                        }}
+                />}
                 </MuiDialogContent>
                 <MuiDialogActions>
                     <Button variant="contained" color="primary" disabled={props.CQData && props.CQData.status === "APPROVED" ? true : false} onClick={() => handleClick("APPROVED")}>Approve</Button><Button disabled={props.CQData && props.CQData.status === "APPROVED" ? true : false} variant="contained" color="secondary" onClick={() => handleClick("REJECTED")}>Reject</Button>
