@@ -27,8 +27,6 @@ const ExamsTable = () => {
     const [examId, setExamId] = useState(0);
     const [openProfilePic, setOpenProfilePic] = useState(false);
     const [currentRowData, setCurrentRowData] = useState({});
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
 
 
     const handleConformDelete = () => {
@@ -47,16 +45,7 @@ const ExamsTable = () => {
 
     useEffect(() => {
         getExamsPerPage(page, rowsPerPage);
-    }, []);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-        getExamsPerPage(newPage, rowsPerPage);
-    };
-    const getDataOnPageChange =(pageSize)=>{
-        setPage(1);
-        getExamsPerPage(1, pageSize);
-    }
+    }, [page, rowsPerPage]);
 
     const getExamsPerPage = (pageNumber, pageSize) => {
         ExamsApiCall.getAllExamsDetails(pageNumber, pageSize)
@@ -73,18 +62,13 @@ const ExamsTable = () => {
 
     const handleExamReviewClick = (row) => {
         //get Exam byId from JSON Array
-        let exam = exams.find(exam => exam._id === row._id);
+        let exam = exams.find(exm => exm._id === row._id);
         let TestQuestions = exam.TestQuestions;
         let TestAnswers = exam.TestAnswers;
         if ((TestQuestions !== undefined && TestAnswers !== undefined) && TestQuestions.length === TestAnswers.length) {
-            TestQuestions.map(q => {
-                TestAnswers.map(a => {
-                    if (a.hasOwnProperty(q._id)) {
-                        q['YourAnswer'] = a[q._id];
-                    }
-                });
-
-            });
+            let AnsMap = new Map();
+            TestAnswers.forEach(ans => { AnsMap.set(Object.keys(ans)[0], Object.values(ans)[0]); });
+            TestQuestions.forEach(que => { que['YourAnswer'] = AnsMap.get(que._id); });
         }
         setTestQuestions(TestQuestions);
         setShowReviewExam(true);
@@ -93,31 +77,34 @@ const ExamsTable = () => {
     }
 
     const columns =
-    [
-      { field: '_id', title: 'Id' },
-      {
-        title: 'profilePicture', field: 'imageUrl',
-        render: rowData =>
-            <img src={rowData.profilePicture !== null && rowData.profilePicture !== undefined ? rowData.profilePicture : "/user.png"} alt="" onClick={() => { setCurrentRowData(rowData); setOpenProfilePic(true) }} style={{ width: 35, borderRadius: '50%' }} />
-      },
-      { field: 'Name', title: 'Name', },
-      { field: 'Email', title: 'Email', },
-      { field: 'TopicName', title: 'TopicName', },
-      { field: 'Date', title: 'Date',
-        render: row => HelperUtils.formatDateWithTimeStamp(row.Date)
-      },
-      { field: 'TestScore', title: 'TestScore', },
-      { field: 'Review', title: 'Review',
-        render:(row)=>(<Button variant="contained" onClick={() => handleExamReviewClick(row)} ><FindInPageIcon color="primary" /></Button>)
-        },
-      { field: 'Delete', title: 'Delete',
-        render:(row)=>(<Button variant="contained" onClick={() => { setOpenDeleteModel(true); setExamId(row._id) }} ><DeleteIcon color="error" /></Button>)
-       },
-      
-    ]
+        [
+            { field: '_id', title: 'Id' },
+            {
+                title: 'profilePicture', field: 'imageUrl',
+                render: rowData =>
+                    <img src={rowData.profilePicture !== null && rowData.profilePicture !== undefined ? rowData.profilePicture : "/user.png"} alt="" onClick={() => { setCurrentRowData(rowData); setOpenProfilePic(true) }} style={{ width: 35, borderRadius: '50%' }} />
+            },
+            { field: 'Name', title: 'Name', },
+            { field: 'Email', title: 'Email', },
+            { field: 'TopicName', title: 'TopicName', },
+            {
+                field: 'Date', title: 'Date',
+                render: row => HelperUtils.formatDateWithTimeStamp(row.Date)
+            },
+            { field: 'TestScore', title: 'TestScore', },
+            {
+                field: 'Review', title: 'Review',
+                render: (row) => (<Button variant="contained" onClick={() => handleExamReviewClick(row)} ><FindInPageIcon color="primary" /></Button>)
+            },
+            {
+                field: 'Delete', title: 'Delete',
+                render: (row) => (<Button variant="contained" onClick={() => { setOpenDeleteModel(true); setExamId(row._id) }} ><DeleteIcon color="error" /></Button>)
+            },
 
-    const rows=exams;
-    const TableData = { columns, rows, page, rowsPerPage, totalCount,toolTip:"Add Question",title:"Exams Data", showActions:false}
+        ]
+
+    const rows = exams;
+    const TableData = { columns, rows, page, rowsPerPage, totalCount, toolTip: "Add Question", title: "Exams Data", showActions: false }
     return (
         <div className="Exams-Table">
             <Home />
@@ -127,89 +114,16 @@ const ExamsTable = () => {
             <div className="Data-Table">
                 <DataTable
                     data={TableData}
-                    handleChangePage={handleChangePage}
+                    handleChangePage={(event, newPage) => setPage(newPage)}
                     setOpen={setShowReviewExam}
                     setIdForDelete={setExamId}
                     setShowWarningPopup={setOpenDeleteModel}
                     setRowsPerPage={setRowsPerPage}
                     setPage={setPage}
-                    getDataOnPageChange={getDataOnPageChange}
+                    getDataOnPageChange={(pageSize) => { setRowsPerPage(pageSize); setPage(1) }}
                 />
             </div>
         </div>
     );
 }
-
 export default ExamsTable;
-
-
-/*
- <div className="heading">
-                    <div className="label">
-                        <label htmlFor="">
-                            <Typography color='textPrimary' variant='h6' component='h6' align='center' >
-                                Exam Details Table
-                            </Typography >
-                        </label>
-                    </div>
-                    <TextField
-                        size="small"
-                        id="outlined-basic"
-                        label="Search"
-                        variant="filled"
-                        className="search-box"
-                        InputProps={{
-                            endAdornment: (
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            ),
-                        }}
-
-                    />
-                </div>
-                <Table stickyHeader aria-label="sticky table" >
-                    <TableHead  >
-                        <TableRow >
-                            <TableCell >Id</TableCell>
-                            <TableCell >Name</TableCell>
-                            <TableCell >Email</TableCell>
-                            <TableCell >TopicName</TableCell>
-                            <TableCell >WrittenDate</TableCell>
-                            <TableCell >TestScore</TableCell>
-                            <TableCell >Review</TableCell>
-                            <TableCell >Delete</TableCell>
-                        </TableRow>
-                    </TableHead>
-
-                    <TableBody >
-                        {exams && exams.map((row) => (
-                            <TableRow key={row._id}>
-                                <TableCell >{row._id}</TableCell>
-                                <TableCell >{row.Name}</TableCell>
-                                <TableCell >{row.Email}</TableCell>
-                                <TableCell >{row.TopicName}</TableCell>
-                                <TableCell >{HelperUtils.formateDate(row.Date)}</TableCell>
-                                <TableCell >{row.TestScore}</TableCell>
-                                <TableCell ><Button variant="contained" onClick={() => handleExamReviewClick(row)} ><FindInPageIcon color="primary" /></Button></TableCell>
-                                <TableCell ><Button variant="contained" onClick={() => { setOpenDeleteModel(true); setExamId(row._id) }} ><DeleteIcon color="error" /></Button></TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-
-                <div className="custompagination">
-                    {RecordsPerPageComponent()}
-                    <Pagination
-                        count={Math.ceil(totalCount / rowsPerPage)}
-                        showFirstButton
-                        color="primary"
-                        variant="text"
-                        showLastButton
-                        defaultPage={1}
-                        onChange={handleChangePage}
-                    />
-                </div>
-
-
-*/

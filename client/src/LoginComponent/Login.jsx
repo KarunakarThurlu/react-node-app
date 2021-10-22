@@ -23,6 +23,7 @@ function Login(props) {
             setLoader(false);
             if (response.data.statusCode === 200) {
                 localStorage.setItem("isAuthenticated", true);
+                localStorage.setItem("loginDate", new Date().toDateString());
                 addLoggedInUserData(response.data.data);
                 if(response.data.data.roles.some(role => role.role_name === "ADMIN"))
                     localStorage.setItem("isAdmin", true);
@@ -80,7 +81,9 @@ function Login(props) {
                 </div>
             </form>
             <div className="questions">
-                <Link to="/signup"><h4 className="questions-text" >New User?</h4></Link>  <Link to="/forgotpassword"><h4 className="questions-text">Forgot Password?</h4></Link>
+                <Link to="/signup"><h4 className="questions-text" >New User?</h4></Link> 
+                <Link to="/signin"><h4 className="questions-text" >Alredy have account?</h4></Link>
+                {/* <Link to="/forgotpassword"><h4 className="questions-text">Forgot Password?</h4></Link> */}
             </div>
 
         </div>

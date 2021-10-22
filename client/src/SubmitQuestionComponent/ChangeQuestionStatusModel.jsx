@@ -8,8 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import Notifier from '../Utils/Notifier';
-import QuestionsApiCall from '../ApiCalls/QuestionsApiCall';
 import "./AddQuestions.scss"
 
 function ChangeQuestionStatusModel(props) {

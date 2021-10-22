@@ -35,6 +35,23 @@ exports.AdminOrUser = async (request, response, next) => {
     }
 
 }
+exports.AdminOrSuperAdmin = async (request, response, next) => {
+    let user = await GetUserFromToken.getUserDetailsFromToken(request);
+    try {
+        if (user !== null) {
+            if (user.roles.some(role => role.role_name === "ADMIN" || role.role_name === "SUPER_ADMIN")) {
+                next()
+            } else {
+                return response.json({ "data": {}, "statusCode": 401, "message": "Access Denied" })
+            }
+        } else {
+            return response.json({ "data": {}, "statusCode": 401, "message": "Access Denied" })
+        }
+    } catch (error) {
+        return response.json({ "data": {}, "statusCode": 500, "message": error.message })
+    }
+
+}
 exports.User = async (request, response, next) => {
     let user = await GetUserFromToken.getUserDetailsFromToken(request);
     try {

@@ -3,7 +3,6 @@ const GetUserFromToken = require("../utils/GetUserDetailsFromToken");
 
 exports.getAllExamsDetails = async (request, response, next) => {
     const requestUser = await GetUserFromToken.getUserDetailsFromToken(request);
-    console.log(requestUser);
     try {
         const pageNumber = parseInt(request.query.pageNumber) - 1 || 0;
         const pageSize = parseInt(request.query.pageSize) || 5;

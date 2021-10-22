@@ -54,7 +54,6 @@ function SubmitQuestion(props) {
         setSpinner(true);
         setPage(1);
         getAllQuestions(1, pageSize);
-       // setSpinner(false);
     }
     const handleDeleteQuestion = () => {
         deleteQuestion(questionIdForDelete);
@@ -117,7 +116,7 @@ function SubmitQuestion(props) {
     const rows = questions.questions;
     const totalCount = questions.totalCount;
     if (rows !== undefined && rows.length !== 0) {
-        rows.map((q, i) => {
+        rows.forEach((q, i) => {
             q.creator_name = q.creator.name;
             q.topic_name = q.topic.topicName;
             q.createdOn = HelperUtils.formateDate(q.createdOn);
@@ -133,9 +132,9 @@ function SubmitQuestion(props) {
         <div className="questions-container">
             <Home />
             {spinner && <CircularProgress/>}
-            <QuestionsVisualization open={showVisualization} onClose={()=>setShowVisualization(false)}/>
-            <ChangeQuestionStatusModel updateQuestion={updateQuestioninList} open={statusModelOpen} CQData={currentQuestion} onClose={() => setStatusModelOpen(false)} />
-            <SubmitQuestionModel open={open} editFormData={formDataToEdit} onClose={() => setOpen(false)} />
+            {showVisualization && <QuestionsVisualization open={showVisualization} onClose={()=>setShowVisualization(false)}/>}
+            {updateQuestioninList && <ChangeQuestionStatusModel updateQuestion={updateQuestioninList} open={statusModelOpen} CQData={currentQuestion} onClose={() => setStatusModelOpen(false)} />}
+            {open && <SubmitQuestionModel open={open} editFormData={formDataToEdit} onClose={() => setOpen(false)} />}
             <WarningPopupModel open={showWarningPopup} message={CommonConstants.Delete_Question_Warning} onClickYes={handleDeleteQuestion} handleClose={() => setShowWarningPopup(false)} />
             <div className="Data-Table">
                 <DataTable

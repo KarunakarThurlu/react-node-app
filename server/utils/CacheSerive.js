@@ -1,30 +1,26 @@
 const NodeCache= require('node-cache');
 
-class CacheService{
+const cache = new NodeCache({ stdTTL: 60 * 60 * 1, checkperiod: 60 * 60 * 24 * 1 });
 
-    constructor(){
-        this.cache = new NodeCache({
-            stdTTL: 60 * 60 * 1,
-            checkperiod: 60 * 60 * 1,
-            useClones: false
-        });
-    }
-
-    get(key){
-        return this.cache[key];
-    }
-
-    set(key, value){
-        this.cache[key] = value;
-    }
-
-    remove(key){
-        delete this.cache[key];
-    }
-
-    //flush all cache every hour
-    flush(){
-        this.cache.flushAll();
-    }
+exports.get = (key) => {
+    return cache.get(key);
+}
+exports.set = (key, value) => {
+    return cache.set(key, value);
+}
+exports.has = (key) => {
+    return cache.has(key);
+}
+exports.del =(key) => {
+    return cache.del(key);
+}
+exports.flush = () => {
+    return cache.flushAll();
+}
+exports.getStats = () => {
+    return cache.getStats();
+}
+exports.getKeys = () => {
+    return cache.keys();
 }
 

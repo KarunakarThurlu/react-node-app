@@ -27,7 +27,7 @@ function AddUserModel(props) {
             if (typeof roles === 'string') {
                 let rs = roles.split(",");
                 let rolesArray = [];
-                rs.map(r => {
+                rs.forEach(r => {
                     let obj = { role_name: r }
                     rolesArray.push(obj);
                 })

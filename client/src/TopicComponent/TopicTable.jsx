@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Home from "../HomeComponent/Home";
 import TopicContext from '../Context/TopicContext/TopicContext';
-import DeletePopUpModel from '../Utils/WarningPopUpModel';
 import HelperUtils from '../Utils/HelperUtils';
 import TopicModel from './TopicModel';
 import WarningPopupModel from "../Utils/WarningPopUpModel"
@@ -18,37 +17,24 @@ const TopicTable = () => {
   const [showWarningPopup, setShowWarningPopup] = useState(false);
   const [editTopicData, setEditTopicData] = useState(null);
   const [deleteTopicId, setDeleteTopicId] = useState(0);
-  const [showVisualization,setShowVisualization]=useState(false);
+  const [showVisualization, setShowVisualization] = useState(false);
   const { Topics, getAllTopics, deleteTopic } = useContext(TopicContext);
 
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-    getAllTopics(newPage, rowsPerPage);
-  };
 
   useEffect(() => {
     getAllTopics(page, rowsPerPage);
-  }, []);
-
-  const getDataOnPageChange = (pageSize) => {
-    setPage(1);
-    getAllTopics(1, pageSize);
-  }
-
+  }, [page, rowsPerPage]);
+  
   let rows = Topics.Topics;
   if (rows !== undefined && rows.length !== 0) {
-    rows.map((q, i) => {
-        q.name = q.creator.name;
-        q.createdOn = HelperUtils.formateDate(q.createdOn);
-        q.updatedOn = HelperUtils.formateDate(q.updatedOn);
+    rows.forEach((q, i) => {
+      q.name = q.creator.name;
+      q.createdOn = HelperUtils.formateDate(q.createdOn);
+      q.updatedOn = HelperUtils.formateDate(q.updatedOn);
     });
-}
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-    console.log(page, rowsPerPage);
-  };
+  }
+
 
   const columns =
     [
@@ -58,32 +44,32 @@ const TopicTable = () => {
       { field: 'name', title: 'Name', },
       { field: 'createdOn', title: 'CreatedOn', },
       { field: 'updatedOn', title: 'UpdatedOn', },
-      
+
     ]
 
   const handleConformDelete = () => {
     deleteTopic(deleteTopicId);
     setShowWarningPopup(false);
   }
-  const TableData = { columns, rows, page, rowsPerPage, totalCount: Topics.totalCount, toolTip: "Add Topic",showGroupByHeader:true, title: "Topics Data " ,showActions:true}
+  const TableData = { columns, rows, page, rowsPerPage, totalCount: Topics.totalCount, toolTip: "Add Topic", showGroupByHeader: true, title: "Topics Data ", showActions: true }
   return (
     <div className="topic-table">
       <Home />
-      <TopicVisualization open={showVisualization} onClose={()=>setShowVisualization(false)}/>
-      <DeletePopUpModel open={openDeleteModel} onClickYes={handleConformDelete} message={CommonConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
+      {showVisualization && <TopicVisualization open={showVisualization} onClose={() => setShowVisualization(false)} />}
+      <WarningPopupModel open={openDeleteModel} onClickYes={handleConformDelete} message={CommonConstants.Delete_Topic_Warning} handleClose={() => setOpenDeleteModel(false)} />
       <TopicModel open={open} data={editTopicData} onClose={() => setOpen(false)} />
       <WarningPopupModel open={showWarningPopup} message={CommonConstants.Delete_Topic_Warning} onClickYes={handleConformDelete} handleClose={() => setShowWarningPopup(false)} />
       <div className="Data-Table">
         <DataTable
           data={TableData}
-          handleChangePage={handleChangePage}
+          handleChangePage={(event, newPage) => setPage(newPage)}
           setFormDataToEdit={setEditTopicData}
           setOpen={setOpen}
           setIdForDelete={setDeleteTopicId}
           setShowWarningPopup={setShowWarningPopup}
           setRowsPerPage={setRowsPerPage}
           setPage={setPage}
-          getDataOnPageChange={getDataOnPageChange}
+          getDataOnPageChange={(pageSize) => { setPage(1); setRowsPerPage(pageSize) }}
           setShowVisualization={setShowVisualization}
         />
       </div>

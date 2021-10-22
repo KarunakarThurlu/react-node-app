@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { withRouter, useHistory } from "react-router-dom"
+import { withRouter } from "react-router-dom"
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import { Typography } from '@material-ui/core';
@@ -14,7 +14,6 @@ import config from "../ApiCalls/Config";
 function ChangePassword(props) {
     const [data, setData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
     const [errors, setErrors] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-
     useEffect(() => {
         if (props.open) {
             setData({ currentPassword: '', newPassword: '', confirmPassword: '' });
@@ -26,9 +25,11 @@ function ChangePassword(props) {
         setData({ ...data, [event.target.name]: event.target.value });
         setErrors({ ...errors, [event.target.name]: '' });
     }
+   
 
     const handleSubmit = () => {
         if (validateForm()) {
+            data["_id"]=props.userId || "";
             UsersApiCalls.changePassword(data).then(res => {
                 if (res.data.statusCode === 200) {
                     config.LOCAL_FORAGE.removeItem("token");
@@ -38,7 +39,7 @@ function ChangePassword(props) {
                     props.onClose();
                     Notifier.notify(res.data.message, Notifier.notificationType.SUCCESS);
                 } else {
-                    setErrors({ ...errors, ['currentPassword']: res.data.message });
+                    setErrors({ ...errors,currentPassword: res.data.message });
                 }
             })
                 .then(error => {
@@ -49,7 +50,7 @@ function ChangePassword(props) {
     const validateForm = () => {
         let isValid = true;
         let errorsObj = { currentPassword: '', newPassword: '', confirmPassword: '' };
-        if (data.currentPassword.length <= 0) {
+        if (data.currentPassword.length <= 0 && !props.role===true) {
             isValid = false;
             errorsObj.currentPassword = 'Current Password is required';
         }
@@ -84,7 +85,8 @@ function ChangePassword(props) {
                     </Typography>
                 </DialogTitle>
                 <DialogContent>
-                    <TextField
+                    {props.role===true?"":
+                      <TextField
                         error={errors.currentPassword !== "" ? true : false}
                         helperText={errors.currentPassword}
                         id="outlined-basic"
@@ -94,7 +96,7 @@ function ChangePassword(props) {
                         name="currentPassword"
                         value={data.currentPassword}
                         onChange={handleChange}
-                    /><br /><br />
+                    />}<br /><br />
                     <TextField
                         error={errors.newPassword !== "" ? true : false}
                         helperText={errors.newPassword}

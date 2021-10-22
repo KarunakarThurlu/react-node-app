@@ -141,9 +141,11 @@ const AddQuestion = () => {
                 } else {
                     setErrors({ ...errors, topic: '' });
                 }
+                break;
             default:
                 break;
         }
+        
     }
     const validateForm = () => {
         let isValid = true;

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import Home from '../HomeComponent/Home'
-import UserContext from "../Context/UserContext/UserContext";
 import SkipNextRoundedIcon from '@material-ui/icons/SkipNextRounded';
 import SkipPreviousRoundedIcon from '@material-ui/icons/SkipPreviousRounded';
 import Grid from '@material-ui/core/Grid';
@@ -35,7 +34,6 @@ function WriteExam(props) {
     const [openSubmitWarningModel, setOpenSubmitWarningModel] = useState(false);
     const [openExamResultsModel, setOpenExamResultsModel] = useState(false);
     const [testScore, setTestScore] = useState(0);
-    const [questionsRange, setQuestionsRange] = useState(0);
     const [rangedata, setRangeData] = useState([]);
     const [loader, setLoader] = useState(false);
     const [selectedRange, setSelectedRange] = useState('');
@@ -52,7 +50,6 @@ function WriteExam(props) {
         QuestionsApiCall.getSelectedTopicQuestionsCount(id)
             .then(response => {
                 if (response.data.statusCode === 200) {
-                    setQuestionsRange(response.data.data);
                     getRangeList(response.data.data);
                     setLoader(false);
                 }
@@ -81,6 +78,7 @@ function WriteExam(props) {
                             e["answer"] = '';
                             e["id"] = i + 1;
                             array.push(e);
+                            return null;
                         });
                         setQuestions(array);
                         setQuestionInfo(array[0]);
@@ -194,9 +192,9 @@ function WriteExam(props) {
             <WarningPopUpModel open={openSubmitWarningModel} message={CommonConstants.Submit_Exam_Warning} onClickYes={handleSubmit} handleClose={() => setOpenSubmitWarningModel(false)} />
             <ExamResults open={openExamResultsModel} handleClose={() => setOpenExamResultsModel(false)} testScore={testScore} />
             {loader && <CircularProgress className="loader" />}
-            {startExam === true ? <Grid container >
-                <Grid item xs={8} sm={8}>
-                    <FormControl >
+            {startExam === true ? <Grid container className="writeexam" spacing={0}>
+                <Grid item xs={8} >
+                    <FormControl className="Question-name-form-controll">
                         <FormLabel >{questionInfo.id}.{questionInfo.name}</FormLabel>
                         <RadioGroup value={value} onChange={event => setValue(event.target.value)}>
                             <FormControlLabel value="A" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "A" ? true : false} />} label={questionInfo.optionA} />
@@ -204,12 +202,12 @@ function WriteExam(props) {
                             <FormControlLabel value="C" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "C" ? true : false} />} label={questionInfo.optionC} />
                             <FormControlLabel value="D" onClick={e => saveAnswer(e)} control={<Radio checked={questionInfo.answer === "D" ? true : false} />} label={questionInfo.optionD} />
                         </RadioGroup>
-                        <div className="next-buttons">
-                            <Button variant="contained" color="primary" onClick={e => handleNextButtons("PreviousQuestion")}><SkipPreviousRoundedIcon style={{ color: "white" }} /></Button><Button variant="contained" color="primary" onClick={(e) => handleNextButtons("NextQuestion")}><SkipNextRoundedIcon style={{ color: "white" }} /></Button>
-                        </div>
                     </FormControl>
+                    <div className="next-buttons">
+                            <Button variant="contained" color="primary" onClick={e => handleNextButtons("PreviousQuestion")}><SkipPreviousRoundedIcon style={{ color: "white" }} /></Button><Button variant="contained" color="primary" onClick={(e) => handleNextButtons("NextQuestion")}><SkipNextRoundedIcon style={{ color: "white" }} /></Button>
+                    </div>
                 </Grid>
-                <Grid item xs={3} sm={3}>
+                <Grid item xs={3}  >
                     Timer   {minutes} : {seconds}
                     <Grid className="questions-list" container justify="center" spacing={1}>
                         {questions.map((value, i) => (
@@ -225,14 +223,15 @@ function WriteExam(props) {
 
             </Grid>
                 :
-                <Grid container spacing={1} className="start-exam">
-                    <Grid item xs={8} sm={8}>
+                <Grid container spacing={0} className="start-exam">
+                    <Grid item xs={8} >
                         <Typography color='primary' variant='h6' component='h6' align='center' >
                             Exam Contains 20 Questions and Time also 20 minutes. Each
                             Question has exactly one minute. Before starting the exam you need to select Topic & Questions Range
                             then you can click on start.
                         </Typography>
                         <br /><br />
+                        <div className="start-exam-form-control">
                         <FormControl variant="outlined" >
                             <InputLabel >Topic</InputLabel>
                             <Select
@@ -248,7 +247,7 @@ function WriteExam(props) {
                             </Select>
                         </FormControl>
                         <br /><br />
-                        <FormControl variant="outlined" >
+                        <FormControl variant="outlined" className="start-exam-form-control">
                             <InputLabel >Questions Range</InputLabel>
                             <Select
                                 native
@@ -267,8 +266,10 @@ function WriteExam(props) {
                                 {rangedata.map((v, i) => (<option key={i} value={v}>{v}</option>))}
                             </Select>
                         </FormControl>
+                        
                         <br /><br /> <br />
                         <Button variant="contained" color='primary' onClick={handleStartExam}>Start</Button>
+                        </div>
                     </Grid>
                 </Grid>
 

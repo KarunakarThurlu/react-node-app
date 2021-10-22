@@ -1,7 +1,10 @@
 const Topic = require("../models/TopicsModel");
 const Question = require("../models/QuestionsModel");
 const User = require("../models/UserModel");
+const Exam = require("../models/ExamModel");
 const GetUserFromToken = require("../utils/GetUserDetailsFromToken");
+const CacheService = require("../utils/CacheSerive");
+const Constants = require("../utils/CommonConstants");
 
 
 exports.saveTopic = async (request, response, next) => {
@@ -13,11 +16,12 @@ exports.saveTopic = async (request, response, next) => {
             creator: requestUser._id,
         });
         const savedT = await topic.save();
+        CacheService.del("allTopicsForDropDown");
+        CacheService.del(Constants.KEYS.QUETIONS_VISULN);
         return response.json({ data: savedT, statusCode: 200, message: "Topic Saved" });
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });
     }
-
 }
 
 exports.updateTopic = async (request, response, next) => {
@@ -31,6 +35,8 @@ exports.updateTopic = async (request, response, next) => {
             });
             topic.creator = requestUser._id;
             const updatedTopic = await Topic.findByIdAndUpdate({ _id: request.body._id }, topic, (error, doc, res) => { });
+            CacheService.del("allTopicsForDropDown");
+            CacheService.del(Constants.KEYS.QUETIONS_VISULN);
             return response.json({ data: updatedTopic, statusCode: 200, message: "Topic Updated Successfully." });
         } else {
             return response.json({ data: {}, statusCode: 400, message: "Not Found" });
@@ -55,7 +61,10 @@ exports.deleteTopicById = async (request, response, next) => {
         const topic = await Topic.findById({ _id: request.query.id });
         if (topic) {
             await Question.deleteMany({ topic: topic._id });
+            await Exam.deleteMany({ TopicName: topic.topicName });
             await Topic.findByIdAndDelete({ _id: topic.id }, (errror, doc, res) => response.json({ data: {}, statusCode: "200", message: "Topic Deleted" }));
+            CacheService.del("allTopicsForDropDown");
+            CacheService.del(Constants.KEYS.QUETIONS_VISULN);
         }
         else
             return response.json({ data: {}, statusCode: 400, message: "Not Found" });
@@ -81,8 +90,13 @@ exports.getAllTopics = async (request, response, next) => {
 //getAll Topics Without pagination with topicName, _id for Showing Add Question Dropdown
 exports.getAllTopicsWithoutPagination = async (request, response, next) => {
     try {
-        const t = await Topic.find().select("topicName _id");
-        return response.json({ data: t, statusCode: 200, message: "OK" });
+        if(CacheService.has("allTopicsForDropDown")){
+            return response.json({ data: CacheService.get("allTopicsForDropDown"), statusCode: 200, message: "OK" });
+        }else{
+            const t = await Topic.find().select("topicName _id");
+            CacheService.set("allTopicsForDropDown",t);
+            return response.json({ data: t, statusCode: 200, message: "OK" });
+        }
     } catch (error) {
         return response.json({ data: {}, statusCode: 500, message: error.message });
     }

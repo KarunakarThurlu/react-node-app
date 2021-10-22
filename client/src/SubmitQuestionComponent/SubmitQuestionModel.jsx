@@ -181,6 +181,7 @@ function SubmitQuestionModel(props) {
                 if (topic._id === data.topic || topic.topicName === data.topic) {
                     return topic.topicName;
                 }
+                return null;
             })
             return (<option value={data.topic} >{t[0] && t[0].topicName}</option>)
         }

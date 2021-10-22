@@ -1,11 +1,5 @@
-import React, { useState, useCallback } from 'react'
-import Slider from '@material-ui/core/Slider'
+import React, { useState} from 'react'
 import Cropper from 'react-easy-crop'
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
 
 const ImageCropper = ({ getBlob, inputImg }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 })

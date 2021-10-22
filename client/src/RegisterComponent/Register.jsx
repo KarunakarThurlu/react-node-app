@@ -1,33 +1,19 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import TextField from '@material-ui/core/TextField';
 import { useForm } from 'react-hook-form';
 import { Link } from "react-router-dom"
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Button from '@material-ui/core/Button';
-
 import "./register.scss";
-import SignupApi from '../ApiCalls/SignupApiCall';
 import UserContext from "../Context/UserContext/UserContext";
 
 function Register(props) {
 
-    const [user, setUser] = useState();
-
     const { saveUser } = useContext(UserContext);
     const { register, handleSubmit, formState: { errors }, } = useForm();
     const onSubmit = (data) => {
-
+        data['roles']=[{role_name:"USER"}]
         saveUser(data);
-        SignupApi.signUp(data)
-            .then(response => {
-                if (response.data.statusCode === 200) {
-                    //saveUser(response.data.data)
-                }
-            })
-            .catch(error => {
-
-            });
-        
     };
 
     return (
@@ -38,24 +24,40 @@ function Register(props) {
                     <TextField
                         id="outlined-basic"
                         variant="outlined"
-                        label="Name"
+                        label="First Name"
                         type="text"
-                        name="name"
-                        {...register("name", { required: "User name is required" })}
+                        name="firstName"
+                        {...register("firstName", { required: "First name is required" })}
                     />
                     <br />
-                    {errors.name && <span className="Error-Message">{errors.name.message}</span>}
+                    {errors.firstName && <span className="Error-Message">{errors.firstName.message}</span>}
+                    <br />
+                    <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        label="Last Name"
+                        type="text"
+                        name="lastName"
+                        {...register("lastName", { required: "Last name is required" })}
+                    />
+                    <br />
+                    {errors.lastName && <span className="Error-Message">{errors.lastName.message}</span>}
                     <br />
                     <TextField
                         id="outlined-basic"
                         variant="outlined"
                         label="Phono"
                         type="text"
-                        name="phono"
-                        {...register("phono", { required: "User phono is required" })}
+                        name="phoneNumber"
+                        {...register("phoneNumber",{ 
+                             required: "User phono is required",
+                             pattern:{
+                                 value:/^\d{10}$/
+                             }
+                             })}
                     />
                     <br />
-                    {errors.phono && <span className="Error-Message">{errors.phono.message}</span>}
+                    {errors.phoneNumber && <span className="Error-Message">{errors.phoneNumber.message}</span>}
                     <br />
                     <TextField
                         id="outlined-basic"
@@ -102,9 +104,10 @@ function Register(props) {
                 </div>
             </form>
             <div className="questions">
-                <Link to="/signin"><h4 className="questions-text" >Alredy have account?</h4></Link>  <Link to="/forgotpassword"><h4 className="questions-text">Forgot Password?</h4></Link>
+                <Link to="/signin"><h4 className="questions-text" >Alredy have account?</h4></Link>  
+                <Link to="/signup"><h4 className="questions-text" >New User?</h4></Link> 
+                {/* <Link to="/forgotpassword"><h4 className="questions-text">Forgot Password?</h4></Link> */}
             </div>
-
         </div>
     )
 }

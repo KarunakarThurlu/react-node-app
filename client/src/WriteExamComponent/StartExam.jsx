@@ -13,7 +13,7 @@ import "./writeexam.scss";
 
 function StartExam() {
     const [topics, setTopics] = useState([]);
-    const [startExam, setStartExam] = useState(false);
+    
 
     useEffect(() => {
         TopicApiCall.getAllTopics()
@@ -22,7 +22,7 @@ function StartExam() {
     }, []);
 
     const handleClick = () => {
-        setStartExam(true);
+       
         console.log("fooo");
     }
 

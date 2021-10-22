@@ -1,14 +1,12 @@
 import React from 'react'
-import { Route, Redirect } from "react-router-dom";
+import { Route, } from "react-router-dom";
+import Login from "../LoginComponent/Login";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = (props) => {
     return (
-        <Route
-            {...rest}
-            render={props => (
-                localStorage.getItem("isAuthenticated") === "true" ? <Component {...props} /> : <Redirect to="/signin" />
-            )}
-        />
+        <Route {...props} >
+               { localStorage.getItem("isAuthenticated") === "true" && localStorage.getItem("loginDate") ===new Date().toDateString() ? props.children: <Login />}
+        </Route>
     )
 }
 

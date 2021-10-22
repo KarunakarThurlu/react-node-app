@@ -96,7 +96,7 @@ function UserQuestionsView(props) {
         }
         const rows = questions;
         if (rows !== undefined && rows.length !== 0) {
-            rows.map((q, i) => {
+            rows.forEach((q, i) => {
                 q.creator_name = q.creator.name;
                 q.topic_name = q.topic.topicName;
                 q.createdOn = HelperUtils.formateDate(q.createdOn);
@@ -104,7 +104,6 @@ function UserQuestionsView(props) {
             });
         }
         const TableData = { columns, rows, page, rowsPerPage,title:"Questions Data" ,showGroupByHeader:false, totalCount,showActions:false}
-        console.log("TAbleData :",TableData);
     return (
         <div>
             {spinner && <CircularProgress  />}

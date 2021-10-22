@@ -73,6 +73,7 @@ const UserState = (props) => {
             .then(response => {
                 if (response.data.statusCode === 200) {
                     Notifier.notify("User Details Updated Successfully", Notifier.notificationType.SUCCESS);
+                    config.LOCAL_FORAGE.setItem("user", response.data.data);
                     dispatch({
                         type: UserActions.UPDATE_USER,
                         payload: response.data.data

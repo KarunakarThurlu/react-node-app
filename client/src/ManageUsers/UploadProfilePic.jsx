@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {  useState, useContext } from 'react';
 import ImageCropper from './ImageCropper';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
@@ -6,12 +6,11 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import config from "../ApiCalls/Config";
 import UserContext from '../Context/UserContext/UserContext';
 
 
 const UploadProfilePic = (props) => {
-    const [loader, setLoader] = useState(false);
+ 
     const [image, setImage] = useState({});
     const [errorMessage, setErrorMesssage] = useState("");
     const [croppedImage, setCroppedImage] = useState();
@@ -42,7 +41,7 @@ const UploadProfilePic = (props) => {
     const handleUpload = (e) => {
         if (fileName.length !== 0 && fileName !== "") {
             e.preventDefault();
-            setLoader(true);
+            
             uploadProfilePic(croppedImage);
             props.onClose();
         } else {

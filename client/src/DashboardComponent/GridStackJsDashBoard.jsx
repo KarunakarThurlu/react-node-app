@@ -1,4 +1,4 @@
-import React, {  useRef } from 'react';
+/*import React, {  useRef } from 'react';
 import Home from "../HomeComponent/Home";
 import { Link } from "react-router-dom"
 import 'react-grid-layout/css/styles.css'
@@ -97,7 +97,7 @@ const GridStackJsDashBoard = (props) => {
   const firstChart = useRef(null);
   const secondChart = useRef(null);
   const thirdChart = useRef(null);
-  const fourthdChart = useRef(null);
+ 
 
   const layoutLg = [
     {i: 'a', x: 0, y: 0, w: 4, h: 2,resizeHandles:["ne","se","sw","nw"]},
@@ -125,7 +125,7 @@ const GridStackJsDashBoard = (props) => {
   let layout=window.innerHeight>613?mView:Dview
  
   const onLayoutChange = (i) => {
-    Highcharts.charts.map((v,i,a) => {
+    Highcharts.charts.forEach((v,i,a) => {
       if (Highcharts.charts[i] !== undefined)
         Highcharts.charts[i].reflow(); 
     })
@@ -179,3 +179,5 @@ const GridStackJsDashBoard = (props) => {
 }
 
 export default GridStackJsDashBoard;
+
+*/

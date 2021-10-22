@@ -54,6 +54,7 @@ const ChartUtils = (chartdata) => {
                     text: 'Users By Role',
                     y: 10
                 },
+                legend:true,
                 plotOptions: {
                     pie: {
                         dataLabels: {
@@ -87,7 +88,10 @@ const ChartUtils = (chartdata) => {
                 title: {
                     text: chartdata && chartdata.title
                 },
-                //colors: ["#001177"],
+                legend: {
+                    enabled: false
+                },
+                colors:['#CC0033','#990033','#660033','#330033','#003366','#006699','#0099CC','#00CCFF','#33CCFF','#66CCFF','#99CCFF','#CCCCFF','#FFCCFF','#FF99FF','#FF66CC','#FF3399','#FF0066','#CC0033','#990033','#660033','#330033','#003366','#006699','#0099CC','#00CCFF','#33CCFF','#66CCFF','#99CCFF','#CCCCFF','#FFCCFF','#FF99FF','#FF66CC','#FF3399','#FF0066','#CC0033','#990033','#660033','#330033','#003366'],
                 accessibility: {
                     announceNewData: {
                         enabled: true
@@ -127,29 +131,18 @@ const ChartUtils = (chartdata) => {
         case CommonConstants.VARIABLE_RADIUS_PIE:
             return {
                 chart: {
-                    type: 'variablepie',
-                    immutable: true
-                },
-                title: {
-                    text: 'Countries compared by population density and total area.'
+                    type: 'variablepie',  
                 },
                 tooltip: {
                     headerFormat: '',
                     pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
-                        'Area (square km): <b>{point.y}</b><br/>' +
-                        'Population density (people per square km): <b>{point.z}</b><br/>'
+                        'Count: <b>{point.y}</b><br/>' 
                 },
-                series: [{
-                    minPointSize: 10,
-                    innerSize: '20%',
-                    zMin: 0,
-                    name: 'countries',
-                    data: [{
-                        name: 'Spain',
-                        y: 505370,
-                        z: 92.9
-                    }]
-                }]
+               // colors: ["green", "blue", "orange", "#ee609c"],
+                title: {
+                    text: 'Users by Role'
+                },
+                series: chartdata && chartdata.data,
             }
 
         case CommonConstants.SPLINE:
@@ -175,7 +168,7 @@ const ChartUtils = (chartdata) => {
                     categories:  chartdata && chartdata.xaxis,
                     
                   },
-                colors: ["#001177"],
+                colors:[ '#001177',],
                 series: [{
                     name: chartdata && chartdata.yaxistitle,
                     data: chartdata && chartdata.seriesData,

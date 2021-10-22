@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Highcharts from "highcharts";
+import 'react-grid-layout/css/styles.css'
+import 'react-resizable/css/styles.css'
 import HighchartsReact from "highcharts-react-official";
 import Typography from '@material-ui/core/Typography';
 import GridLayout from 'react-grid-layout';
@@ -13,6 +15,8 @@ import CommonConstants from "../Utils/CommonConstants";
 import ChartUtil from "../Utils/ChartUtil";
 import DrillDown   from "highcharts/modules/drilldown"
 import QuestionsApiCall from "../ApiCalls/QuestionsApiCall";
+import variablePie from "highcharts/modules/variable-pie.js";
+variablePie(Highcharts);
 DrillDown(Highcharts);
 
 require("highcharts/modules/exporting")(Highcharts);
@@ -29,7 +33,6 @@ const DashBoard = (props) => {
     const firstChart = useRef(null);
     const secondChart = useRef(null);
     const thirdChart = useRef(null);
-    const fourthdChart = useRef(null);
 
     useEffect(()=>{
         getDataForDashBoard();
@@ -46,8 +49,8 @@ const DashBoard = (props) => {
     }
 
     const layoutLg = [
-        { i: 'a', x: 0, y: 0, w: 4, h: 2, resizeHandles: ["ne", "se", "sw", "nw"] },
-        { i: 'b', x: 4, y: 0, w: 4, h: 2, resizeHandles: ["ne", "se", "sw", "nw"] },
+        { i: 'a', x: 0, y: 0, w: 2, h: 2, resizeHandles: ["ne", "se", "sw", "nw"] },
+        { i: 'b', x: 2, y: 0, w: 6, h: 2, resizeHandles: ["ne", "se", "sw", "nw"] },
         { i: 'c', x: 8, y: 0, w: 4, h: 2, resizeHandles: ["ne", "se", "sw", "nw"] },
         { i: 'd', x: 12, y: 1, w: 12, h: 2, resizeHandles: ["ne", "se", "sw", "nw"] }
     ];
@@ -60,7 +63,7 @@ const DashBoard = (props) => {
     ];
     const mView = {
         layout: layoutSm,
-        columns: 1,
+        columns: 2,
         width: 350,
     }
     const Dview = {
@@ -74,6 +77,7 @@ const DashBoard = (props) => {
         Highcharts.charts.map((v, i, a) => {
             if (Highcharts.charts[i] !== undefined)
                 Highcharts.charts[i].reflow();
+            return null;
         })
     };
 
@@ -92,13 +96,16 @@ const DashBoard = (props) => {
         drilldowndata: chartsData.splinechartData && chartsData.splinechartData.drillDownData,
         title: "Questions count by Topic Name",
         yaxistitle: "Questions Count",
-        xaxistitle: "Topic Name"
+        xaxistitle: "Questions Count"
     }
     const pie = {
         chartType: CommonConstants.PIE_CHART,
-        data: chartsData.splinechartData && chartsData.groupByUserStatus,
+        data: chartsData.groupByUserStatus && chartsData.groupByUserStatus.users,
         title: "Users By Status",
     }
+    const VARIABLE_RADIUS_PIE= {
+         chartType: CommonConstants.VARIABLE_RADIUS_PIE, 
+         data: chartsData.groupByUserStatus && chartsData.groupByUserStatus.usersWithRoles}
     return (
         <div className="dashboard">
             <Home />
@@ -127,7 +134,7 @@ const DashBoard = (props) => {
                             <div key="a">
                                 <HighchartsReact
                                     highcharts={Highcharts}
-                                    options={ChartUtil(spline)}
+                                    options={ChartUtil(VARIABLE_RADIUS_PIE)}
                                     ref={firstChart}
                                     containerProps={{ style: { width: '100%', height: '100%' } }}
                                 />
@@ -146,12 +153,12 @@ const DashBoard = (props) => {
                                     options={ChartUtil(pie)} containerProps={{ style: { width: '100%', height: '100%' } }}
                                 />
                             </div>
-                            {/* <div key="d">
+                             <div key="d">
                                 <HighchartsReact highcharts={Highcharts}
                                     ref={thirdChart}
-                                    options={ChartUtil(pie)} containerProps={{ style: { width: '100%', height: '100%' } }}
+                                    options={ChartUtil(spline)} containerProps={{ style: { width: '100%', height: '100%' } }}
                                 />
-                            </div> */}
+                            </div> 
                         </GridLayout>
                     </Grid>
                 </Grid>

@@ -11,7 +11,7 @@ const User = new mongoose.Schema({
     DOB: { type: Date, required: true, default: Date.now },
     email: { type: String, required: true, unique: true, lowercase: true },
     status: { type: String, required: true, enum: ["ACTIVE", "INACTIVE", "INVITED"], default: 'INVITED' },
-    gender: { type: String, required: true, enum: ["MALE", "FEMALE"] },
+    gender: { type: String,  enum: ["MALE", "FEMALE"] },
     password: { type: String, required: true, trim: true },
     roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role", }],
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" }

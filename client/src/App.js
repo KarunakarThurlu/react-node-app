@@ -2,10 +2,8 @@ import './App.css';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Home from "../src/HomeComponent/Home";
 import Login from "../src/LoginComponent/Login";
-import LandingPage from "./LandingComponent/LandingComponent";
 import Register from "../src/RegisterComponent/Register";
 import QuestionsTable from "./SubmitQuestionComponent/QuestionsTable";
 import PageNotFoud from "./Utils/Custom404Page";
@@ -14,7 +12,6 @@ import PublicRoute from "./Router/PublicRoute";
 import PrivateRoute from "./Router/PrivateRoute";
 import QuestionsDashBoard from './DashboardComponent/QuestionsDashBoard';
 import DashBoard from './DashboardComponent/DashBoard';
-import GridStackDashBoard from './DashboardComponent/GridStackJsDashBoard';
 import WriteExam from './WriteExamComponent/WriteExam';
 import UserState from "./Context/UserContext/UserState";
 import QuestionState from "./Context/QuestionsContext/QuestionsState";
@@ -32,14 +29,13 @@ function App() {
         <QuestionState>
           <TopicState>
           <Switch>
-            <PublicRoute restricted={false} component={LandingPage} exact path="/" />
+            <PublicRoute restricted={false} component={Login} exact path="/" />
             <PublicRoute restricted={true} component={Login} exact path="/signin" />
             <PublicRoute restricted={true} component={Register} exact path="/signup" />
             <PublicRoute restricted={false} component={ForgotPassword} exact path="/forgotpassword" />
             <PrivateRoute component={Home} exact path="/home" />
             <PrivateRoute component={QuestionsDashBoard} exact path="/questionsdashboard" />
             <PrivateRoute component={DashBoard} exact path="/usersdashboard" />
-            <PrivateRoute component={GridStackDashBoard} exact path="/superadmindashboard" />
             <PrivateRoute component={WriteExam} exact path="/writeexam" />
             <PrivateRoute component={QuestionsTable} exact path="/submitquestion" />
             <PrivateRoute component={ManageUsers} exact path="/manageusers" />
@@ -71,5 +67,4 @@ function App() {
     </BrowserRouter>
   );
 }
-
 export default App;

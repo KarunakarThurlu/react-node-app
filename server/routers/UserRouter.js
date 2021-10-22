@@ -39,10 +39,10 @@ var upload = multer({
 router.post("/login", userController.login);
 router.post("/saveuser", userController.saveUser);
 router.get("/getuser", JWTConfig.verify, [JWTConfig.AdminOrUser], userController.getUserById);
-router.get("/getallusers", JWTConfig.verify, [JWTConfig.AdminOrUser], userController.getAllUsers);
+router.get("/getallusers", JWTConfig.verify, [JWTConfig.AdminOrSuperAdmin], userController.getAllUsers);
 router.put("/updateuser",JWTConfig.verify, userController.updateUser);
 router.put("/changepassword",JWTConfig.verify,userController.changePassword)
-router.delete("/deleteuser", JWTConfig.verify, [JWTConfig.Admin], userController.deleteUserById);
-router.post("/uploadprofilepic", upload.single('image'), userController.uploadProfilePicture);
-router.get("/getusersdataforvisualization", userController.getUsersDataForVisualization);
+router.delete("/deleteuser", JWTConfig.verify, [JWTConfig.SuperAdmin], userController.deleteUserById);
+router.post("/uploadprofilepic",JWTConfig.verify, upload.single('image'), userController.uploadProfilePicture);
+router.get("/getusersdataforvisualization",JWTConfig.verify,[JWTConfig.AdminOrSuperAdmin], userController.getUsersDataForVisualization);
 module.exports = router;

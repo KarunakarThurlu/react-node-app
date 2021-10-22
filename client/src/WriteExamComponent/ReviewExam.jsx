@@ -1,7 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import Divider from '@material-ui/core/Divider';
 import CloseIcon from  '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
@@ -14,7 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import Paper from '@material-ui/core/Paper';
+
 
 
 
@@ -24,7 +22,7 @@ const ReviewExam = (props) => {
     useEffect(()=>{
         setData(props.data!==undefined?props.data:[]);
         setScore(props.score!==undefined?props.score:0);
-    },[props.data]);
+    },[props]);
    
     return ( 
         <div>
